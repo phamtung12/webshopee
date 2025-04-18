@@ -22,12 +22,12 @@
                 <nav class="header__navbar hide-on-mobile-tablet">
                     <ul class="header__navbar-list">
                         <li class="header__navbar-item header__navbar-item--separate">
-                            <a href="https://banhang.shopee.vn" class="header__navbar-item-link">
+                            <a href="./public/login.php" class="header__navbar-item-link">
                                 Kênh Người Bán
                             </a>
                         </li>
                         <li class="header__navbar-item header__navbar-item--separate">
-                            <a href="https://shopee.vn/seller/signup" class="header__navbar-item-link">
+                            <a href="./public/registersl.php" class="header__navbar-item-link">
                                 Trở thành Người bán Shopee
                             </a>
                         </li>
@@ -339,7 +339,7 @@
                     </div>
                     <div class="home-product">
                         <div class="grid__row">
-                            <div class="grid_col-2">
+                            <div class="grid__col-6">
                                 <!-- Product iteam -->
                                 <a class="home-product-item">
                                     <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lzujgk4wtllt8d_tn.webp"
@@ -378,202 +378,6 @@
 
                                 </a>
                             </div>
-                            <div class="grid_col-2">
-                                <!-- Product iteam -->
-                                <a class="home-product-item">
-                                    <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lzujgk4wtllt8d_tn.webp"
-                                        alt="" class="home-product-item__img">
-                                    <h4 class="home-product-item__name">
-                                        <img src="./assets/img/like0.png" alt="" class="home-product-item__likeimg">
-                                        Áo khoác gió 2 mặt Picolo chất gió tráng bạc
-                                        chống nước, cản gió cản bụi
-                                    </h4>
-                                    <div class="home-product-item__price">
-                                        <span class="home-product-item__price-current">₫175.000</span>
-                                        <span class="home-product-item__price-sale">-30%</span>
-                                    </div>
-                                    <div class="home-product-item__chip">Rẻ Vô Địch</div>
-                                    <div class="home-product-item__evaluate">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-                                            viewBox="0 0 12 12" fill="none">
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
-                                                fill="url(#paint0_linear_1_7602)" />
-                                            <defs>
-                                                <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
-                                                    x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
-                                                    <stop stop-color="#FFCA11" />
-                                                    <stop offset="1" stop-color="#FFAD27" />
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
-                                        <div class="home-product-item__numstar"> 4.8</div>
-                                        <div class="home-product-item__sold">Đã bán 11,3k</div>
-                                    </div>
-                                    <div class="home-product-item__freeship">
-                                        <img src="./assets/img/freeship.png" alt=""
-                                            class="home-product-item__freeship-img">
-                                    </div>
-
-                                </a>
-                            </div>
-                            <div class="grid_col-2">
-                                <!-- Product iteam -->
-                                <a class="home-product-item">
-                                    <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lzujgk4wtllt8d_tn.webp"
-                                        alt="" class="home-product-item__img">
-                                    <h4 class="home-product-item__name">
-                                        <img src="./assets/img/like0.png" alt="" class="home-product-item__likeimg">
-                                        Áo khoác gió 2 mặt Picolo chất gió tráng bạc
-                                        chống nước, cản gió cản bụi
-                                    </h4>
-                                    <div class="home-product-item__price">
-                                        <span class="home-product-item__price-current">₫175.000</span>
-                                        <span class="home-product-item__price-sale">-30%</span>
-                                    </div>
-                                    <div class="home-product-item__chip">Rẻ Vô Địch</div>
-                                    <div class="home-product-item__evaluate">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-                                            viewBox="0 0 12 12" fill="none">
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
-                                                fill="url(#paint0_linear_1_7602)" />
-                                            <defs>
-                                                <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
-                                                    x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
-                                                    <stop stop-color="#FFCA11" />
-                                                    <stop offset="1" stop-color="#FFAD27" />
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
-                                        <div class="home-product-item__numstar"> 4.8</div>
-                                        <div class="home-product-item__sold">Đã bán 11,3k</div>
-                                    </div>
-                                    <div class="home-product-item__freeship">
-                                        <img src="./assets/img/freeship.png" alt=""
-                                            class="home-product-item__freeship-img">
-                                    </div>
-
-                                </a>
-                            </div>
-                            <div class="grid_col-2">
-                                <!-- Product iteam -->
-                                <a class="home-product-item">
-                                    <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lzujgk4wtllt8d_tn.webp"
-                                        alt="" class="home-product-item__img">
-                                    <h4 class="home-product-item__name">
-                                        <img src="./assets/img/like0.png" alt="" class="home-product-item__likeimg">
-                                        Áo khoác gió 2 mặt Picolo chất gió tráng bạc
-                                        chống nước, cản gió cản bụi
-                                    </h4>
-                                    <div class="home-product-item__price">
-                                        <span class="home-product-item__price-current">₫175.000</span>
-                                        <span class="home-product-item__price-sale">-30%</span>
-                                    </div>
-                                    <div class="home-product-item__chip">Rẻ Vô Địch</div>
-                                    <div class="home-product-item__evaluate">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-                                            viewBox="0 0 12 12" fill="none">
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
-                                                fill="url(#paint0_linear_1_7602)" />
-                                            <defs>
-                                                <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
-                                                    x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
-                                                    <stop stop-color="#FFCA11" />
-                                                    <stop offset="1" stop-color="#FFAD27" />
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
-                                        <div class="home-product-item__numstar"> 4.8</div>
-                                        <div class="home-product-item__sold">Đã bán 11,3k</div>
-                                    </div>
-                                    <div class="home-product-item__freeship">
-                                        <img src="./assets/img/freeship.png" alt=""
-                                            class="home-product-item__freeship-img">
-                                    </div>
-
-                                </a>
-                            </div>
-                            <div class="grid_col-2">
-                                <!-- Product iteam -->
-                                <a class="home-product-item">
-                                    <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lzujgk4wtllt8d_tn.webp"
-                                        alt="" class="home-product-item__img">
-                                    <h4 class="home-product-item__name">
-                                        <img src="./assets/img/like0.png" alt="" class="home-product-item__likeimg">
-                                        Áo khoác gió 2 mặt Picolo chất gió tráng bạc
-                                        chống nước, cản gió cản bụi
-                                    </h4>
-                                    <div class="home-product-item__price">
-                                        <span class="home-product-item__price-current">₫175.000</span>
-                                        <span class="home-product-item__price-sale">-30%</span>
-                                    </div>
-                                    <div class="home-product-item__chip">Rẻ Vô Địch</div>
-                                    <div class="home-product-item__evaluate">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-                                            viewBox="0 0 12 12" fill="none">
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
-                                                fill="url(#paint0_linear_1_7602)" />
-                                            <defs>
-                                                <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
-                                                    x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
-                                                    <stop stop-color="#FFCA11" />
-                                                    <stop offset="1" stop-color="#FFAD27" />
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
-                                        <div class="home-product-item__numstar"> 4.8</div>
-                                        <div class="home-product-item__sold">Đã bán 11,3k</div>
-                                    </div>
-                                    <div class="home-product-item__freeship">
-                                        <img src="./assets/img/freeship.png" alt=""
-                                            class="home-product-item__freeship-img">
-                                    </div>
-
-                                </a>
-                            </div>
-                            <div class="grid_col-2">
-                                <!-- Product iteam -->
-                                <a class="home-product-item">
-                                    <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lzujgk4wtllt8d_tn.webp"
-                                        alt="" class="home-product-item__img">
-                                    <h4 class="home-product-item__name">
-                                        <img src="./assets/img/like0.png" alt="" class="home-product-item__likeimg">
-                                        Áo khoác gió 2 mặt Picolo chất gió tráng bạc
-                                        chống nước, cản gió cản bụi
-                                    </h4>
-                                    <div class="home-product-item__price">
-                                        <span class="home-product-item__price-current">₫175.000</span>
-                                        <span class="home-product-item__price-sale">-30%</span>
-                                    </div>
-                                    <div class="home-product-item__chip">Rẻ Vô Địch</div>
-                                    <div class="home-product-item__evaluate">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-                                            viewBox="0 0 12 12" fill="none">
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
-                                                fill="url(#paint0_linear_1_7602)" />
-                                            <defs>
-                                                <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
-                                                    x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
-                                                    <stop stop-color="#FFCA11" />
-                                                    <stop offset="1" stop-color="#FFAD27" />
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
-                                        <div class="home-product-item__numstar"> 4.8</div>
-                                        <div class="home-product-item__sold">Đã bán 11,3k</div>
-                                    </div>
-                                    <div class="home-product-item__freeship">
-                                        <img src="./assets/img/freeship.png" alt=""
-                                            class="home-product-item__freeship-img">
-                                    </div>
-
-                                </a>
-                            </div>
-
                         </div>
                     </div>
 

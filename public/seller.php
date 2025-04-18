@@ -1,3 +1,33 @@
+<?php
+include('../db.php');
+session_start();
+$seller_id = $_SESSION['user_id'];
+$name = $_POST['name'] ?? '';
+$description = $_POST['description'] ?? '';
+$price = $_POST['price'] ?? 0;
+$stock_quantity = $_POST['stock_quantity'] ?? 0;
+$category_id = $_POST['category_id'] ?? null;
+$brand_id = $_POST['brand_id'] ?? null;
+
+// Kiểm tra xem người bán có tồn tại không
+$check = mysqli_query($conn, "SELECT * FROM sellers WHERE seller_id = $seller_id");
+if (mysqli_num_rows($check) == 0) {
+    die("Người bán không tồn tại!");
+}
+
+// Thêm sản phẩm
+$sql = "INSERT INTO products (seller_id, category_id, brand_id, name, description, price, stock_quantity, status)
+        VALUES ($seller_id, $category_id, $brand_id, '$name', '$description', $price, $stock_quantity, 'pending')";
+
+if (mysqli_query($conn, $sql)) {
+    echo "Thêm sản phẩm thành công!";
+} else {
+    echo "Lỗi khi thêm sản phẩm: " . mysqli_error($conn);
+}
+
+mysqli_close($conn);
+?>
+
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -7,6 +37,78 @@
     <title>Kênh Người Bán</title>
     <link rel="stylesheet" href="../assets/css/base.css">
     <link rel="stylesheet" href="../assets/css/seller.css">
+    <style>
+        .main {
+            display: flex;
+        }
+
+        .product-form-container {
+            background: #fff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            max-width: 700px;
+            margin: 30px auto;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .form-title {
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: #222;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input[type="file"] {
+            border: none;
+            font-size: 14px;
+            margin-top: 6px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #ee4d2d;
+            outline: none;
+        }
+
+        .submit-btn {
+            background-color: #ee4d2d;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #d8431f;
+        }
+    </style>
 </head>
 
 <body>
@@ -28,29 +130,33 @@
                     </div>
                     <li class="header__navbar-item header__navbar-user">
                         <?php
-                        if (!isset($_SESSION['username'])) {
-                            // ❌ Chưa đăng nhập → Không hiển thị user-img
+                        if (!isset($_SESSION['seller_id'])) {
+                            // ❌ Chưa đăng nhập hoặc không phải seller
                             echo '
-                                         <li class="header__navbar-item header__navbar-item--separate">
-                            <a href="register.php" class="header__navbar-item-link header__navbar-item-link--bold">
-                                Đăng ký
-                            </a>
-                        </li>
-                        <li class="header__navbar-item">
-                            <a href="login.php" class="header__navbar-item-link header__navbar-item-link--bold">
-                                Đăng nhập
-                            </a>
-                        </li>';
+        <li class="header__navbar-item header__navbar-item--separate">
+            <a href="registersl.php" class="header__navbar-item-link header__navbar-item-link--bold">Đăng ký người bán</a>
+        </li>
+        <li class="header__navbar-item">
+            <a href="login.php" class="header__navbar-item-link header__navbar-item-link--bold">Đăng nhập</a>
+        </li>';
                         } else {
-                            // ✅ Đã đăng nhập → Hiển thị avatar và tên
+                            // ✅ Đã đăng nhập → Lấy thông tin shop từ CSDL
+                            $seller_id = $_SESSION['seller_id'];
+                            $sql = "SELECT shop_name, shop_avatar FROM sellers WHERE seller_id = $seller_id";
+                            $result = mysqli_query($conn, $sql);
+                            $seller = mysqli_fetch_assoc($result);
+
+                            // Avatar mặc định nếu không có
+                            $avatar = !empty($seller['shop_avatar']) ? $seller['shop_avatar'] : 'default-avatar.png';
+                            $shop_name = htmlspecialchars($seller['shop_name']);
+
                             echo '
-                                        <div class="header__navbar-user-img">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 512 512">
-                                    <path fill="#c6c6c6"
-                                        d="M332.64 64.58C313.18 43.57 286 32 256 32c-30.16 0-57.43 11.5-76.8 32.38c-19.58 21.11-29.12 49.8-26.88 80.78C156.76 206.28 203.27 256 256 256s99.16-49.71 103.67-110.82c2.27-30.7-7.33-59.33-27.03-80.6M432 480H80a31 31 0 0 1-24.2-11.13c-6.5-7.77-9.12-18.38-7.18-29.11C57.06 392.94 83.4 353.61 124.8 326c36.78-24.51 83.37-38 131.2-38s94.42 13.5 131.2 38c41.4 27.6 67.74 66.93 76.18 113.75c1.94 10.73-.68 21.34-7.18 29.11A31 31 0 0 1 432 480" />
-                                </svg>
-                            </div>
-                            <span class="header__navbar-user-name">' . htmlspecialchars($_SESSION['username']) . '</span>';
+        <li class="header__navbar-item header__navbar-user">
+            <div class="header__navbar-user-img">
+                <img src="uploads/' . $avatar . '" alt="Shop Avatar" style="width: 30px; height: 30px; border-radius: 50%;">
+            </div>
+            <span class="header__navbar-user-name">' . $shop_name . '</span>
+        </li>';
                         }
                         ?>
                         <ul class="header__navbar-user-menu">
@@ -62,31 +168,85 @@
                 </nav>
             </div>
         </header>
-        <div class="sidebar">
-            <h2 onclick="toggleSubmenu('orderMenu', 'orderIcon')">
-                Quản Lý Đơn Hàng
-                <svg id="orderIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48" class="icon-down">
-                    <path fill="none" stroke="#999" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M36 18L24 30L12 18" />
-                </svg>
-            </h2>
-            <ul id="orderMenu" class="submenu">
-                <li><a href="">Tất cả</a></li>
-                <li><a href="">Giao Hàng Loạt</a></li>
-                <li><a href="">Bàn Giao Đơn Hàng</a></li>
-            </ul>
-            <h2 onclick="toggleSubmenu('productMenu', 'productIcon')">
-                Quản Lý Sản Phẩm
-                <svg id="productIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48" class="icon-down">
-                    <path fill="none" stroke="#999" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M36 18L24 30L12 18" />
-                </svg>
-            </h2>
-            <ul id="productMenu" class="submenu">
-                <li><a href="">Tất Cả Sản Phẩm</a></li>
-                <li><a href="">Thêm Sản Phẩm</a></li>
-            </ul>
-        </div>
-        <div class="main-content">
+        <div class="main">
+            <div class="sidebar">
+                <h2 onclick="toggleSubmenu('orderMenu', 'orderIcon')">
+                    Quản Lý Đơn Hàng
+                    <svg id="orderIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48" class="icon-down">
+                        <path fill="none" stroke="#999" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M36 18L24 30L12 18" />
+                    </svg>
+                </h2>
+                <ul id="orderMenu" class="submenu">
+                    <li><a href="#">Tất cả</a></li>
+                    <li><a href="#">Giao Hàng Loạt</a></li>
+                    <li><a href="#">Bàn Giao Đơn Hàng</a></li>
+                </ul>
 
+                <h2 onclick="toggleSubmenu('productMenu', 'productIcon')">
+                    Quản Lý Sản Phẩm
+                    <svg id="productIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48" class="icon-down">
+                        <path fill="none" stroke="#999" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M36 18L24 30L12 18" />
+                    </svg>
+                </h2>
+                <ul id="productMenu" class="submenu">
+                    <li><a href="#" onclick="loadAllProducts()">Tất Cả Sản Phẩm</a></li>
+                    <li><a href="" id="addProductLink">Thêm Sản Phẩm</a></li>
+                </ul>
+            </div>
+            <div class="main-content">
+                <div class="product-form-container" id="addProductForm" style="display: none;">
+                    <h2 class="form-title">Thêm Sản Phẩm Mới</h2>
+                    <form id="productForm" enctype="multipart/form-data" method="POST">
+                        <div class="form-group">
+                            <label for="name">Tên sản phẩm</label>
+                            <input type="text" name="product_name" name="name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">Danh mục</label>
+                            <select id="category" name="category" required>
+                                <option value="">-- Chọn danh mục --</option>
+                                <?php while ($row = $categories->fetch_assoc()): ?>
+                                    <option value="<?= $row['category_id'] ?>"><?= htmlspecialchars($row['name']) ?></option>
+                                <?php endwhile; ?>
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="brand">Thương hiệu</label>
+                            <select id="brand" name="brand" required>
+                                <option value="">-- Chọn thương hiệu --</option>
+                                <?php while ($row = $brands->fetch_assoc()): ?>
+                                    <option value="<?= $row['brand_id'] ?>"><?= htmlspecialchars($row['name']) ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="price">Giá (VNĐ)</label>
+                            <input type="number" id="price" name="price" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="stock">Số lượng trong kho</label>
+                            <input type="number" id="stock" name="stock_quantity" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Mô tả</label>
+                            <textarea id="description" name="description" rows="4"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="product_image">Hình ảnh sản phẩm:</label><br>
+                            <input type="file" id="product_image" name="product_image" accept="image/*">
+                        </div>
+
+                        <button type="submit" class="submit-btn">Thêm sản phẩm</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </body>
@@ -94,23 +254,20 @@
 </html>
 
 <script>
-    // function toggleSubmenu(id) {
-    //     document.getElementById(id).classList.toggle('active');
-    // }
-
     function toggleSubmenu(menuId, iconId) {
         const submenu = document.getElementById(menuId);
         const icon = document.getElementById(iconId);
 
         submenu.classList.toggle('show');
-
-        if (submenu.classList.contains('show')) {
-            // Mở → icon mũi tên lên
-            icon.innerHTML = `<path fill="currentColor" d="M12.5 6a.47.47 0 0 1-.35-.15L8 1.71L3.85 5.85c-.2.2-.51.2-.71 0c-.2-.2-.2-.51 0-.71L7.65.65c.2-.2.51-.2.71 0l4.5 4.5c.2.2.2.51 0 .71c-.1.1-.23.15-.35.15Z"/>`;
-            document.getElementById(id).classList.toggle('active');
-        } else {
-            // Đóng → icon mũi tên xuống
-            icon.innerHTML = `<path fill="none" stroke="#999" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M36 18L24 30L12 18" />`;
-        }
+        icon.classList.toggle('icon-rotate');
     }
+
+    // Thêm sản phẩm
+    document.getElementById("addProductLink").addEventListener("click", function(e) {
+        e.preventDefault();
+        document.getElementById("addProductForm").style.display = "block";
+        document.querySelector(".main-content").scrollIntoView({
+            behavior: "smooth"
+        });
+    });
 </script>

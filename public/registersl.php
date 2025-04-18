@@ -1,61 +1,54 @@
 <?php
-require_once('../db.php');
 session_start();
+$conn = mysqli_connect("localhost", "root", "phamtung", "qlbh");
+mysqli_set_charset($conn, "utf8");
 
-// Kiểm tra nếu form đã được gửi
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Lấy dữ liệu từ form
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
+if (isset($_POST['register'])) {
+    $username = $_POST['username'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $shop_name = $_POST['shop_name'];
+    $description = $_POST['description'];
 
-    // Kiểm tra nếu thiếu thông tin đăng nhập
-    if (empty($username) || empty($password)) {
-        echo "<script>alert('Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.');</script>";
+    // Kiểm tra tài khoản đã tồn tại chưa
+    $check = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username' OR email = '$email'");
+    if (mysqli_num_rows($check) > 0) {
+        echo "<script>alert('Tên đăng nhập hoặc email đã tồn tại!');</script>";
         exit;
     }
 
-    // Truy vấn để kiểm tra username có tồn tại trong cơ sở dữ liệu không
-    $sql = "SELECT * FROM users WHERE username = '$username'";
-    $result = mysqli_query($conn, $sql);
-
-    if (!$result) {
-        die("Lỗi truy vấn: " . mysqli_error($conn));
+    // Upload ảnh đại diện shop nếu có
+    $shop_avatar = "";
+    if (isset($_FILES['shop_avatar']) && $_FILES['shop_avatar']['error'] === 0) {
+        $target_dir = "uploads/";
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+        $shop_avatar = $target_dir . basename($_FILES["shop_avatar"]["name"]);
+        move_uploaded_file($_FILES["shop_avatar"]["tmp_name"], $shop_avatar);
     }
 
-    if (mysqli_num_rows($result) === 1) {
-        $user = mysqli_fetch_assoc($result);
+    // Thêm vào bảng users
+    $insertUser = "INSERT INTO users (username, password_hash, email, phone, role)
+                   VALUES ('$username', '$password', '$email', '$phone', 'seller')";
+    if (mysqli_query($conn, $insertUser)) {
+        $user_id = mysqli_insert_id($conn); // Lấy ID vừa tạo
 
-        // Kiểm tra mật khẩu
-        if (password_verify($password, $user['password_hash'])) {
-            // Lưu thông tin đăng nhập vào session
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role'];
-
-            // Điều hướng theo vai trò
-            if ($user['role'] == 'admin') {
-                header("Location: ../admin"); // Điều hướng đến trang quản trị
-            } elseif ($user['role'] == 'seller') {
-                header("Location: ../public/seller.php"); // Điều hướng đến trang người bán
-            } else {
-                header("Location: ../public/user.php"); // Điều hướng đến trang khách hàng
-            }
-            exit;
+        // Thêm vào bảng sellers
+        $insertSeller = "INSERT INTO sellers (seller_id, shop_name, description, shop_avatar)
+                         VALUES ('$user_id', '$shop_name', '$description', '$shop_avatar')";
+        if (mysqli_query($conn, $insertSeller)) {
+            echo "<script>alert('Đăng ký người bán thành công!'); window.location.href = 'login.php'</script>";
         } else {
-            // Sai mật khẩu
-            echo "<script>alert('Sai mật khẩu.');</script>";
-            exit;
+            echo "<script>alert('Lỗi khi tạo thông tin shop!');</script>";
         }
     } else {
-        // Tài khoản không tồn tại
-        echo "<script>alert('Tài khoản không tồn tại.');</script>";
-        exit;
+        echo "<script>alert('Lỗi khi tạo tài khoản người dùng!');</script>";
     }
-
-    // Đóng kết nối CSDL
-    mysqli_close($conn);
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -64,9 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập Shopee</title>
+    <title>Đăng ký người bán hàng</title>
+    <link rel="stylesheet" href="../assets/css/register.css">
     <link rel="stylesheet" href="../assets/css/base.css">
-    <link rel="stylesheet" href="../assets/css/login.css">
 </head>
 
 <body>
@@ -84,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </g>
                             </svg>
                         </a>
-                        <div class="login-text">Đăng nhập</div>
+                        <div class="login-text">Đăng ký</div>
                     </div>
                     <a href="" class="help-you">Bạn cần giúp đỡ?</a>
                 </nav>
@@ -94,29 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="login-box">
                 <div class="container-heading">
                     <div class="login-title">
-                        <div class="login-title-text">Đăng nhập</div>
-                        <div class="login-qr">
-                            <div class="login-qr-title">Đăng nhập với mã QR</div>
-                            <a class="login-qr-link" href="">
-                                <svg width="40" height="40" fill="none">
-                                    <g clip-path="url(#clip0)">
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                            d="M18 0H0v18h18V0zM3 15V3h12v12H3zM18 22H0v18h18V22zm-3 15H3V25h12v12zM40 0H22v18h18V0zm-3 15H25V3h12v12z"
-                                            fill="#EE4D2D"></path>
-                                        <path d="M37 37H22.5v3H40V22.5h-3V37z" fill="#EE4D2D"></path>
-                                        <path
-                                            d="M27.5 32v-8h-3v8h3zM33.5 32v-8h-3v8h3zM6 6h6v6H6zM6 28h6v6H6zM28 6h6v6h-6z"
-                                            fill="#EE4D2D"></path>
-                                        <path fill="#fff" d="M-4.3 4l44 43.9-22.8 22.7-43.9-44z"></path>
-                                    </g>
-                                    <defs>
-                                        <clipPath id="clip0">
-                                            <path fill="#fff" d="M0 0h40v40H0z"></path>
-                                        </clipPath>
-                                    </defs>
-                                </svg>
-                            </a>
-                        </div>
+                        <div class="login-title-text">Đăng ký</div>
                     </div>
                 </div>
 
@@ -129,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         <div class="position-input">
                             <div class="tag-input">
-                                <input id="pass" type="password" class="enter-input" placeholder="Mật khẩu" required name="password">
+                                <input id="pass" type="password" class="enter-input" placeholder="Mật khẩu" name="password">
                                 <div class="show-password" onclick="togglePassword()">
                                     <svg id="eye-icon" fill="none" viewBox="0 0 20 10" width="20px" height="16px">
                                         <path stroke="none" fill="#000" fill-opacity=".54"
@@ -139,15 +110,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                             </div>
                         </div>
+                        <div class="position-input">
+                            <div class="tag-input">
+                                <input type="email" class="enter-input" placeholder="Email" required name="email">
+                            </div>
+                        </div>
+                        <div class="position-input">
+                            <div class="tag-input">
+                                <input type="text" class="enter-input" placeholder="Số điện thoại" name="phone">
+                            </div>
+                        </div>
+                        <div class="position-input">
+                            <div class="tag-input">
+                                <input type="text" class="enter-input" name="shop_name" required placeholder="Tên shop">
+                            </div>
+                        </div>
+                        <div class="position-input">
+                            <div class="tag-input">
+                                <input type="text" class="enter-input" name="description" placeholder="Mô tả cửa hàng">
+                            </div>
+                        </div>
+                        <div class="position-input">
+                            <div class="tag-input">
+                                <input class="enter-input" type="file" name="shop_avatar">
+                            </div>
+                        </div>
                         <div class="position-button">
-                            <input type="submit" class="button-login" value="Đăng Nhập">
+                            <input type="submit" class="button-login" value="Đăng Ký" name="register">
                         </div>
                     </form>
-                    <div class="container-help">
-                        <a href="" class="help-title">Quên mật khẩu</a>
-                        <a href="" class="help-title">Đăng nhập với SMS</a>
-                    </div>
-
                     <div class="login-others">
                         <div class="login-others__separator"></div>
                         <span class="login-others__text">hoặc</span>
@@ -182,9 +173,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
 
+                <div class="container-security">
+                    Bằng việc đăng kí, bạn đã đồng ý với Shopee về
+                    <a href="" class="container-security__link">Điều khoản dịch vụ</a>
+                    &
+                    <a href="" class="container-security__link">Chính sách bảo mật</a>
+                </div>
+
                 <div class="container-botom">
-                    <div class="container-botom-title">Bạn mới biết đến Shopee? </div>
-                    <a href="" class="container-botom-link">Đăng ký</a>
+                    <div class="container-botom-title">Bạn đã có tài khoản?</div>
+                    <a href="../public/login.php" class="container-botom-link">Đăng nhập</a>
                 </div>
             </div>
 

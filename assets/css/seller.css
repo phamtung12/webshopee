@@ -146,6 +146,7 @@
     color: rgb(6, 188, 188);
 }
 
+
 .sidebar {
     width: 250px;
     background: #fff;
@@ -206,10 +207,14 @@
     color: var(--text-color);
 }
 
-.submenu.active {
+.submenu.show {
     display: block;
 }
 
-.submenu.show {
-    display: block;
+.icon-down {
+    transition: transform 0.3s ease;
+}
+
+.icon-rotate {
+    transform: rotate(180deg);
 }

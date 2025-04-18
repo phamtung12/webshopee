@@ -1,56 +1,68 @@
 <?php
-require_once('../db.php');
-session_start();
+// Kiểm tra nếu dữ liệu đã được gửi bằng POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Kiểm tra xem các trường có tồn tại trong $_POST không
+    if (isset($_POST['username'], $_POST['password'], $_POST['email'], $_POST['phone'], $_POST['full_name'], $_POST['address'], $_POST['dob'])) {
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $email    = $_POST['email'];
-    $phone    = $_POST['phone'];
-    $role     = $_POST['role'];
+        // Lấy dữ liệu từ form
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+        $email = $_POST['email'];
+        $phone = $_POST['phone'];
+        $role = 'customer'; // Vai trò cố định là khách hàng
 
-    if (empty($username) || empty($password) || empty($email)) {
-        echo "<script>
-            alert('Vui lòng nhập đầy đủ thông tin bắt buộc!');
-        </script>";
-        exit;
-    }
+        $full_name = $_POST['full_name'];
+        $address = $_POST['address'];
+        $dob = $_POST['dob'];
 
-    $password_hash = password_hash($password, PASSWORD_BCRYPT);
-
-    $sql_check = "SELECT * FROM users WHERE username = '$username' OR email = '$email'";
-    $result = mysqli_query($conn, $sql_check);
-
-    if (mysqli_num_rows($result) > 0) {
-        echo "<script>
-            alert('Tên đăng nhập hoặc email đã tồn tại!');
-        </script>";
-        exit;
-    }
-
-    $sql_insert = "INSERT INTO users (username, password_hash, email, phone, role)
-                   VALUES ('$username', '$password_hash', '$email', '$phone', '$role')";
-
-    if (mysqli_query($conn, $sql_insert)) {
-        $user_id = mysqli_insert_id($conn);
-
-        if ($role === 'customer') {
-            mysqli_query($conn, "INSERT INTO customers (customer_id) VALUES ($user_id)");
-        } elseif ($role === 'seller') {
-            mysqli_query($conn, "INSERT INTO sellers (seller_id) VALUES ($user_id)");
+        // Kết nối CSDL
+        $conn = mysqli_connect("localhost", "root", "phamtung", "qlbh");
+        if (!$conn) {
+            die("Kết nối thất bại: " . mysqli_connect_error());
         }
 
-        echo "<script>
-            alert('Đăng ký thành công!');
-            window.location.href = 'login.php';
-        </script>";
-    } else {
-        echo "<script>
-            alert('Lỗi hệ thống: " . mysqli_error($conn) . "');
-        </script>";
-    }
+        // Kiểm tra tên đăng nhập đã tồn tại chưa
+        $check_username = "SELECT * FROM users WHERE username = '$username'";
+        $result = mysqli_query($conn, $check_username);
+        if (mysqli_num_rows($result) > 0) {
+            echo "<script>alert('Tên đăng nhập đã tồn tại!');</script>";
+            exit;
+        }
 
-    mysqli_close($conn);
+        // Kiểm tra email đã tồn tại chưa
+        $check_email = "SELECT * FROM users WHERE email = '$email'";
+        $email_result = mysqli_query($conn, $check_email);
+        if (mysqli_num_rows($email_result) > 0) {
+            echo "<script>alert('Email đã tồn tại!');</script>";
+            exit;
+        }
+
+        // Insert vào bảng users
+        $sql_user = "INSERT INTO users (username, password_hash, email, phone, role)
+                     VALUES ('$username', '$password_hash', '$email', '$phone', '$role')";
+
+        if (mysqli_query($conn, $sql_user)) {
+            $user_id = mysqli_insert_id($conn);
+
+            // Insert vào bảng customers
+            $sql_customer = "INSERT INTO customers (customer_id, full_name, address, dob)
+                             VALUES ($user_id, '$full_name', '$address', '$dob')";
+
+            if (mysqli_query($conn, $sql_customer)) {
+                echo "<script>alert('Đăng ký thành công!'); window.location.href = 'login.php';</script>";
+            } else {
+                echo "<script>alert('Lỗi khi thêm thông tin khách hàng: " . mysqli_error($conn) . "');</script>";
+            }
+        } else {
+            echo "<script>alert('Lỗi khi tạo người dùng: " . mysqli_error($conn) . "');</script>";
+        }
+
+        // Đóng kết nối CSDL
+        mysqli_close($conn);
+    } else {
+        echo "<script>alert('Vui lòng điền đầy đủ thông tin!');</script>";
+    }
 }
 ?>
 
@@ -124,14 +136,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
                         </div>
                         <div class="position-input">
-                            <div class="form-container">
-                                <label for="role">Chọn vai trò:</label>
-                                <select name="role" id="role">
-                                    <option value="customer">Khách hàng</option>
-                                    <option value="seller">Người bán</option>
-                                </select>
+                            <div class="tag-input">
+                                <input type="text" class="enter-input" name="full_name" placeholder="Họ và tên" required>
                             </div>
                         </div>
+                        <div class="position-input">
+                            <div class="tag-input">
+                                <input type="text" class="enter-input" name="address" placeholder="Địa chỉ">
+                            </div>
+                        </div>
+                        <div class="position-input">
+                            <div class="tag-input">
+                                <input type="date" class="enter-input" name="dob" required>
+                            </div>
+                        </div>
+
                         <div class="position-button">
                             <input type="submit" class="button-login" value="Đăng Ký">
                         </div>

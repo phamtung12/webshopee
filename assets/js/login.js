@@ -12,3 +12,20 @@ function togglePassword() {
         </path>`;
     }
 }
+
+function toggleRoleFields() {
+    const role = document.getElementById("role").value;
+    const customerFields = document.getElementById("customer-fields");
+    const sellerFields = document.getElementById("seller-fields");
+
+    if (role === "customer") {
+        customerFields.style.display = "block";
+        sellerFields.style.display = "none";
+    } else if (role === "seller") {
+        customerFields.style.display = "none";
+        sellerFields.style.display = "block";
+    }
+}
+
+// Gọi lần đầu nếu role được chọn sẵn
+document.addEventListener("DOMContentLoaded", toggleRoleFields);

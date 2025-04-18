@@ -1018,6 +1018,7 @@ input {
     font-weight: 500;
     color: #ee4d2d;
     text-align: center;
+    border-bottom: 4px solid #ee4d2d;
 }
 
 .home-product {
