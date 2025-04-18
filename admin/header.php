@@ -46,13 +46,13 @@
     <div class="sidebar">
         <h3 style="text-align:center;">Admin Panel</h3>
         <a href="index.php">🏠 Dashboard</a>
-        <a href="users/list.php">👥 Quản lý người dùng</a>
-        <a href="products/pending.php">📦 Kiểm duyệt sản phẩm</a>
-        <a href="orders/list.php">🧾 Quản lý đơn hàng</a>
-        <a href="reports/list.php">🚩 Xử lý báo cáo</a>
-        <a href="categories/list.php">📂 Danh mục sản phẩm</a>
-        <a href="brands/list.php">🏷️ Thương hiệu</a>
-        <a href="stats.php">📊 Thống kê</a>
+        <a href="../users/list.php">👥 Quản lý người dùng</a>
+        <a href="../products/pending.php">📦 Kiểm duyệt sản phẩm</a>
+        <a href="../orders/list.php">🧾 Quản lý đơn hàng</a>
+        <a href="../reports/list.php">🚩 Xử lý báo cáo</a>
+        <a href="../categories/list.php">📂 Danh mục sản phẩm</a>
+        <a href="../brands/list.php">🏷️ Thương hiệu</a>
+        <a href="../dashboard/stats.php">📊 Thống kê</a>
     </div>
 
     <div class="main">

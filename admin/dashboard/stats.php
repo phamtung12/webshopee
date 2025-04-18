@@ -84,4 +84,4 @@ while ($row = mysqli_fetch_assoc($orderChart)) {
     });
 </script>
 
-<?php include 'footer.php'; ?>
+<?php include './admin/footer.php'; ?>
