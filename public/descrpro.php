@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mô tả sản phẩm</title>
-    <link rel="stylesheet" href="./res/resdescpro.css">
-    <link rel="stylesheet" href="./assets/css/descrpro.css">
-    <link rel="stylesheet" href="./assets/css/base.css">
-    <link rel="stylesheet" href="./assets/fonts/fontawesome-free-6.4.2-web/css/all.min.css">
+    <link rel="stylesheet" href="../res/resdescpro.css">
+    <link rel="stylesheet" href="../assets/css/descrpro.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/fonts/fontawesome-free-6.4.2-web/css/all.min.css">
 </head>
 
 <body>
@@ -31,17 +31,17 @@
                         <a href="https://shopee.vn/web" class="header__navbar-item-link">
                             Tải ứng dụng
                             <div class="header__qr">
-                                <img src="./assets/img/qrcodesp.png" alt="" class="header__qr-img">
+                                <img src="../assets/img/qrcodesp.png" alt="" class="header__qr-img">
                                 <div class="header__qr-apps">
-                                    <img src="./assets/img/appstore.png" alt="App Store"
+                                    <img src="../assets/img/appstore.png" alt="App Store"
                                         class="header__qr-download-img">
-                                    <img src="./assets/img/googleplay.png" alt="Google Play"
+                                    <img src="../assets/img/googleplay.png" alt="Google Play"
                                         class="header__qr-download-img">
                                 </div>
                                 <div class="header__qr-apps">
-                                    <img src="./assets/img/appgallery.png" alt="Google Play"
+                                    <img src="../assets/img/appgallery.png" alt="Google Play"
                                         class="header__qr-download-img">
-                                    <img src="./assets/img/" alt="" class="header__qr-download-img">
+                                    <img src="../assets/img/" alt="" class="header__qr-download-img">
                                 </div>
                             </div>
                         </a>
@@ -69,7 +69,7 @@
                             <ul class="header__notify-list">
                                 <li class="header__notify-item">
                                     <a href="" class="header__notify-link">
-                                        <img src="./assets/img/dale.png" alt="" class="header__notify-img">
+                                        <img src="../assets/img/dale.png" alt="" class="header__notify-img">
                                         <div class="header__notify-info">
                                             <span class="header__notify-name">Chấn động! Deal 1K nhưng được
                                                 baoship</span>
@@ -83,7 +83,7 @@
                                 </li>
                                 <li class="header__notify-item">
                                     <a href="" class="header__notify-link">
-                                        <img src="./assets/img/sale.png" alt="" class="header__notify-img">
+                                        <img src="../assets/img/sale.png" alt="" class="header__notify-img">
                                         <div class="header__notify-info">
                                             <span class="header__notify-name">Chỉ còn 3 tiếng chốt sale
                                                 #9.9</span>
@@ -96,7 +96,7 @@
                                 </li>
                                 <li class="header__notify-item">
                                     <a href="" class="header__notify-link">
-                                        <img src="./assets/img/shopee.png" alt="" class="header__notify-img">
+                                        <img src="../assets/img/shopee.png" alt="" class="header__notify-img">
                                         <div class="header__notify-info">
                                             <span class="header__notify-name">
                                                 Shopee Pay tặng bạn 1 voucher mua hàng Shopee
@@ -186,7 +186,7 @@
                                 <li class="header__search-history-item">
                                     <a class="header__search-history-link" href="https://shopee.vn/welcome-package">
                                         <span class="history__text">Shopee bao ship 0Đ - Đăng ký ngay!</span>
-                                        <img src="./assets/img/free.png" alt="" class="history__img">
+                                        <img src="../assets/img/free.png" alt="" class="history__img">
                                     </a>
                                 </li>
                             </ul>
@@ -227,14 +227,14 @@
 
                         <!-- No cart :  header__cart-list--no-cart-->
                         <div class="header__cart-list">
-                            <img src="./assets/img/cart-empty.png" alt="" class="header__cart-no-cart-img">
+                            <img src="../assets/img/cart-empty.png" alt="" class="header__cart-no-cart-img">
                             <p class="header__cart-no-cart-description">Chưa Có Sản Phẩm</p>
 
                             <h4 class="header__cart-heading">Sản Phẩm Mới Thêm</h4>
                             <ul class="header__cart-list-item">
                                 <!-- Cart item -->
                                 <li class="header__cart-item">
-                                    <img src="./assets/img/giay.jpg" alt="" class="header__cart-img">
+                                    <img src="../assets/img/giay.jpg" alt="" class="header__cart-img">
                                     <div class="header__cart-item-info">
                                         <div class="header__cart-item-head">
                                             <h5 class="header__cart-item-name">Quần Đùi Nam ESSENTIAL chất cotton
@@ -261,9 +261,9 @@
         <div class="grid">
             <div class="product__location">
                 <a href="/" class="product__location-home">Shopee</a>
-                <img src="./assets/img/space.svg" alt="" class="product__location-space">
+                <img src="../assets/img/space.svg" alt="" class="product__location-space">
                 <a href="/" class="product__location-type">Áo</a>
-                <img src="./assets/img/space.svg" alt="" class="product__location-space">
+                <img src="../assets/img/space.svg" alt="" class="product__location-space">
                 <a href="/" class="product__location-nameproduct">Áo Polo Phối cổ SPION Local Brand polo unisex nam nữ
                     oversize - KNC 192</a>
             </div>
@@ -271,23 +271,23 @@
             <div class="card__product">
                 <div class="card__product-left">
                     <div class="card__product-left--first">
-                        <img src="./assets/img/product-main.webp" alt="" class="card__product-top-img">
+                        <img src="../assets/img/product-main.webp" alt="" class="card__product-top-img">
                     </div>
                     <div class="card__product-left--second">
                         <div class="card__product-left--slide">
-                            <img src="./assets/img/product-main.webp" alt="" class="card__product-bottom-img">
+                            <img src="../assets/img/product-main.webp" alt="" class="card__product-bottom-img">
                         </div>
                         <div class="card__product-left--slide">
-                            <img src="./assets/img/product-main.webp" alt="" class="card__product-bottom-img">
+                            <img src="../assets/img/product-main.webp" alt="" class="card__product-bottom-img">
                         </div>
                         <div class="card__product-left--slide">
-                            <img src="./assets/img/product-main.webp" alt="" class="card__product-bottom-img">
+                            <img src="../assets/img/product-main.webp" alt="" class="card__product-bottom-img">
                         </div>
                         <div class="card__product-left--slide">
-                            <img src="./assets/img/product-main.webp" alt="" class="card__product-bottom-img">
+                            <img src="../assets/img/product-main.webp" alt="" class="card__product-bottom-img">
                         </div>
                         <div class="card__product-left--slide">
-                            <img src="./assets/img/product-main.webp" alt="" class="card__product-bottom-img">
+                            <img src="../assets/img/product-main.webp" alt="" class="card__product-bottom-img">
                         </div>
                     </div>
 
@@ -351,7 +351,7 @@
         </div>
     </main>
 
-    <!-- <footer class="footer">
+    <footer class="footer">
         <div class="grid">
             <div class="grid__row">
                 <div class="grid_col-2-4">
@@ -428,58 +428,58 @@
                     <h3 class="footer__heading">THANH TOÁN</h3>
                     <ul class="pay-list">
                         <li class="pay-item">
-                            <img src="./assets/img/visa.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/visa.png" alt="" class="pay-item-img">
                         </li>
                         <li class="pay-item">
-                            <img src="./assets/img/round.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/round.png" alt="" class="pay-item-img">
                         </li>
                         <li class="pay-item">
-                            <img src="./assets/img/jcb.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/jcb.png" alt="" class="pay-item-img">
                         </li>
                         <li class="pay-item">
-                            <img src="./assets/img/americae.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/americae.png" alt="" class="pay-item-img">
                         </li>
                         <li class="pay-item">
-                            <img src="./assets/img/cod.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/cod.png" alt="" class="pay-item-img">
                         </li>
                         <li class="pay-item">
-                            <img src="./assets/img/tragop.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/tragop.png" alt="" class="pay-item-img">
                         </li>
                         <li class="pay-item">
-                            <img src="./assets/img/spay.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/spay.png" alt="" class="pay-item-img">
                         </li>
                         <li class="pay-item">
-                            <img src="./assets/img/slater.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/slater.png" alt="" class="pay-item-img">
                         </li>
                     </ul>
                     <h3 class="footer__heading">ĐƠN VỊ VẬN CHUYỂN</h3>
                     <ul class="pay-list">
                         <li class="pay-item">
-                            <img src="./assets/img/spx.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/spx.png" alt="" class="pay-item-img">
                         </li>
                         <li class="pay-item">
-                            <img src="./assets/img/ghn.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/ghn.png" alt="" class="pay-item-img">
                         </li>
                         <li class="pay-item">
-                            <img src="./assets/img/viettel.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/viettel.png" alt="" class="pay-item-img">
                         </li>
                         <li class="pay-item">
-                            <img src="./assets/img/vietpost.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/vietpost.png" alt="" class="pay-item-img">
                         </li>
                         <li class="pay-item">
-                            <img src="./assets/img/jt.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/jt.png" alt="" class="pay-item-img">
                         </li>
                         <li class="pay-item">
-                            <img src="./assets/img/grab.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/grab.png" alt="" class="pay-item-img">
                         </li>
                         <li class="pay-item">
-                            <img src="./assets/img/ninjavan.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/ninjavan.png" alt="" class="pay-item-img">
                         </li>
                         <li class="pay-item">
-                            <img src="./assets/img/be.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/be.png" alt="" class="pay-item-img">
                         </li>
                         <li class="pay-item">
-                            <img src="./assets/img/aha.png" alt="" class="pay-item-img">
+                            <img src="../assets/img/aha.png" alt="" class="pay-item-img">
                         </li>
                     </ul>
                 </div>
@@ -488,19 +488,19 @@
                     <ul class="footer-list">
                         <li class="footer-item">
                             <a href="" class="footer-item__link">
-                                <img src="./assets/img/facebook.png" alt="" class="footer-item__link-img">
+                                <img src="../assets/img/facebook.png" alt="" class="footer-item__link-img">
                                 Facebook
                             </a>
                         </li>
                         <li class="footer-item">
                             <a href="" class="footer-item__link">
-                                <img src="./assets/img/instargram.png" alt="" class="footer-item__link-img">
+                                <img src="../assets/img/instargram.png" alt="" class="footer-item__link-img">
                                 Instagram
                             </a>
                         </li>
                         <li class="footer-item">
                             <a href="" class="footer-item__link">
-                                <img src="./assets/img/linkIn.png" alt="" class="footer-item__link-img">
+                                <img src="../assets/img/linkIn.png" alt="" class="footer-item__link-img">
                                 LinkedIn
                             </a>
                         </li>
@@ -510,17 +510,17 @@
                     <h3 class="footer__heading">TẢI ỨNG DỤNG SHOPEE</h3>
                     <div class="footer__download">
                         <a href="https://shopee.vn/web" class="footer__download-qr-link">
-                            <img src="./assets/img/qrft.png" alt="Download QR" class="footer__download-qr">
+                            <img src="../assets/img/qrft.png" alt="Download QR" class="footer__download-qr">
                         </a>
                         <div class="footer__download-apps">
                             <a href="https://shopee.vn/web" class="footer__download-apps-link">
-                                <img src="./assets/img/asft.png" alt="Appstore" class="footer__download-apps-img">
+                                <img src="../assets/img/asft.png" alt="Appstore" class="footer__download-apps-img">
                             </a>
                             <a href="https://shopee.vn/web" class="footer__download-apps-link">
-                                <img src="./assets/img/ggpft.png" alt="Googleplay" class="footer__download-apps-img">
+                                <img src="../assets/img/ggpft.png" alt="Googleplay" class="footer__download-apps-img">
                             </a>
                             <a href="https://shopee.vn/web" class="footer__download-apps-link">
-                                <img src="./assets/img/apft.png" alt="Appgallery" class="footer__download-apps-img">
+                                <img src="../assets/img/apft.png" alt="Appgallery" class="footer__download-apps-img">
                             </a>
                         </div>
                     </div>
@@ -589,14 +589,14 @@
 
                 <div class="certification-list">
                     <a href="http://online.gov.vn/Home/WebDetails/18367" class="certification-link">
-                        <img src="./assets/img/dadangky-Bo-Cong-Thuong.png" alt="" class="certification-link-img">
+                        <img src="../assets/img/dadangky-Bo-Cong-Thuong.png" alt="" class="certification-link-img">
                     </a>
                     <a href="http://online.gov.vn/Home/AppDetails/29" class="certification-link">
-                        <img src="./assets/img/logo-da-thong-bao-bo-cong-thuong.webp" alt=""
+                        <img src="../assets/img/logo-da-thong-bao-bo-cong-thuong.webp" alt=""
                             class="certification-link-img">
                     </a>
                     <a href="https://help.shopee.vn/portal/4" class="certification-link">
-                        <img src="./assets/img/bct-hanggia.png" alt="" class="certification-link-img">
+                        <img src="../assets/img/bct-hanggia.png" alt="" class="certification-link-img">
                     </a>
                 </div>
 
@@ -617,7 +617,7 @@
             </div>
         </div>
 
-    </footer> -->
+    </footer>
 </body>
 
 </html>

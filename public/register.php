@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $check_username = "SELECT * FROM users WHERE username = '$username'";
         $result = mysqli_query($conn, $check_username);
         if (mysqli_num_rows($result) > 0) {
-            echo "<script>alert('Tên đăng nhập đã tồn tại!');</script>";
+            echo "<script>alert('Tên đăng nhập đã tồn tại!');window.location.href = document.referrer;</script>";
             exit;
         }
 
@@ -52,16 +52,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (mysqli_query($conn, $sql_customer)) {
                 echo "<script>alert('Đăng ký thành công!'); window.location.href = 'login.php';</script>";
             } else {
-                echo "<script>alert('Lỗi khi thêm thông tin khách hàng: " . mysqli_error($conn) . "');</script>";
+                echo "<script>alert('Lỗi khi thêm thông tin khách hàng: " . mysqli_error($conn) . "');window.location.href = document.referrer;</script>";
             }
         } else {
-            echo "<script>alert('Lỗi khi tạo người dùng: " . mysqli_error($conn) . "');</script>";
+            echo "<script>alert('Lỗi khi tạo người dùng: " . mysqli_error($conn) . "');window.location.href = document.referrer;</script>";
         }
 
         // Đóng kết nối CSDL
         mysqli_close($conn);
     } else {
-        echo "<script>alert('Vui lòng điền đầy đủ thông tin!');</script>";
+        echo "<script>alert('Vui lòng điền đầy đủ thông tin!');window.location.href = document.referrer;</script>";
     }
 }
 ?>

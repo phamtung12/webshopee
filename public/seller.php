@@ -20,7 +20,7 @@ $sql = "INSERT INTO products (seller_id, category_id, brand_id, name, descriptio
         VALUES ($seller_id, $category_id, $brand_id, '$name', '$description', $price, $stock_quantity, 'pending')";
 
 if (mysqli_query($conn, $sql)) {
-    echo "Thêm sản phẩm thành công!";
+    echo "<script>alert('Thêm sản phẩm thành công!'); window.location.href = 'list.php';</script>";
 } else {
     echo "Lỗi khi thêm sản phẩm: " . mysqli_error($conn);
 }

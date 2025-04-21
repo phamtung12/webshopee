@@ -49,11 +49,16 @@ CREATE TABLE products (
     description TEXT,
     price DECIMAL(10, 2),
     stock_quantity INT DEFAULT 0,
+    discount INT DEFAULT 0
+    average_rating DECIMAL(3, 2) DEFAULT 0;
+     sold INT DEFAULT 0;
     status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
     FOREIGN KEY (seller_id) REFERENCES sellers(seller_id),
     FOREIGN KEY (category_id) REFERENCES categories(category_id),
     FOREIGN KEY (brand_id) REFERENCES brands(brand_id)
 );
+
+
 
 -- Bảng product_images
 CREATE TABLE product_images (

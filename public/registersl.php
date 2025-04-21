@@ -14,7 +14,7 @@ if (isset($_POST['register'])) {
     // Kiểm tra tài khoản đã tồn tại chưa
     $check = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username' OR email = '$email'");
     if (mysqli_num_rows($check) > 0) {
-        echo "<script>alert('Tên đăng nhập hoặc email đã tồn tại!');</script>";
+        echo "<script>alert('Tên đăng nhập hoặc email đã tồn tại!');window.location.href = document.referrer;</script>";
         exit;
     }
 
@@ -41,10 +41,10 @@ if (isset($_POST['register'])) {
         if (mysqli_query($conn, $insertSeller)) {
             echo "<script>alert('Đăng ký người bán thành công!'); window.location.href = 'login.php'</script>";
         } else {
-            echo "<script>alert('Lỗi khi tạo thông tin shop!');</script>";
+            echo "<script>alert('Lỗi khi tạo thông tin shop!');window.location.href = document.referrer;</script>";
         }
     } else {
-        echo "<script>alert('Lỗi khi tạo tài khoản người dùng!');</script>";
+        echo "<script>alert('Lỗi khi tạo tài khoản người dùng!');window.location.href = document.referrer;</script>";
     }
 }
 ?>

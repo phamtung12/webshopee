@@ -2,19 +2,15 @@
 require_once('../db.php');
 session_start();
 
-// Kiểm tra nếu form đã được gửi
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Lấy dữ liệu từ form
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
 
-    // Kiểm tra nếu thiếu thông tin đăng nhập
     if (empty($username) || empty($password)) {
-        echo "<script>alert('Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.');</script>";
+        echo "<script>alert('Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.');window.location.href = document.referrer;</script>";
         exit;
     }
 
-    // Truy vấn để kiểm tra username có tồn tại trong cơ sở dữ liệu không
     $sql = "SELECT * FROM users WHERE username = '$username'";
     $result = mysqli_query($conn, $sql);
 
@@ -25,34 +21,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (mysqli_num_rows($result) === 1) {
         $user = mysqli_fetch_assoc($result);
 
-        // Kiểm tra mật khẩu
         if (password_verify($password, $user['password_hash'])) {
-            // Lưu thông tin đăng nhập vào session
-            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_id'] = $user['user_id']; // Cột đúng là user_id
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
 
-            // Điều hướng theo vai trò
             if ($user['role'] == 'admin') {
-                header("Location: ../admin"); // Điều hướng đến trang quản trị
+                header("Location: ../admin");
             } elseif ($user['role'] == 'seller') {
-                header("Location: ../public/seller.php"); // Điều hướng đến trang người bán
-            } else {
-                header("Location: ../public/user.php"); // Điều hướng đến trang khách hàng
+                header("Location: ../public/seller.php");
+            } elseif ($user['role'] == 'customer') {
+                // Truy vấn để lấy customer_id từ bảng customers
+                $user_id = $user['user_id'];
+                $customer_query = "SELECT customer_id FROM customers WHERE customer_id = $user_id";
+                $cus_result = mysqli_query($conn, $customer_query);
+
+                if ($cus = mysqli_fetch_assoc($cus_result)) {
+                    $_SESSION['customer_id'] = $cus['customer_id'];
+                    header("Location: ../public/user.php"); // Điều hướng đến trang khách
+                    exit;
+                } else {
+                    echo "<script>alert('Không tìm thấy thông tin khách hàng.');window.location.href = document.referrer;</script>";
+                    exit;
+                }
             }
-            exit;
         } else {
-            // Sai mật khẩu
-            echo "<script>alert('Sai mật khẩu.');</script>";
+            echo "<script>alert('Sai mật khẩu.');window.location.href = document.referrer;</script>";
             exit;
         }
     } else {
-        // Tài khoản không tồn tại
-        echo "<script>alert('Tài khoản không tồn tại.');</script>";
+        echo "<script>alert('Tài khoản không tồn tại.');window.location.href = document.referrer;</script>";
         exit;
     }
 
-    // Đóng kết nối CSDL
     mysqli_close($conn);
 }
 ?>

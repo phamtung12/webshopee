@@ -1,6 +1,24 @@
 <?php
 require_once('../db.php');
 session_start();
+if (!isset($_SESSION['username'])) {
+    header('Location: login.php');
+    exit();
+}
+if (isset($_SESSION['username'])) {
+    $sql = "SELECT * FROM users WHERE username = '" . $_SESSION['username'] . "'";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $_SESSION['role'] = $row['role'];
+    }
+}
+if ($_SESSION['role'] !== 'customer' && $_SESSION['role'] !== 'seller') {
+    echo "<script>alert('Bạn không có quyền truy cập trang này.'); window.location.href = 'user.php';</script>";
+    exit();
+}
+?>
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,15 +44,19 @@ session_start();
                 <nav class="header__navbar hide-on-mobile-tablet">
                     <ul class="header__navbar-list">
                         <li class="header__navbar-item header__navbar-item--separate">
-                            <a href="https://banhang.shopee.vn" class="header__navbar-item-link">
+                            <a href="seller.php" class="header__navbar-item-link">
                                 Kênh Người Bán
                             </a>
                         </li>
-                        <li class="header__navbar-item header__navbar-item--separate">
-                            <a href="https://shopee.vn/seller/signup" class="header__navbar-item-link">
-                                Trở thành Người bán Shopee
-                            </a>
-                        </li>
+                        <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'customer'): ?>
+                            <!-- Hiển thị "Trở thành Người bán" nếu vai trò là customer -->
+                            <li class="header__navbar-item header__navbar-item--separate">
+                                <a href="register_seller.php" class="header__navbar-item-link">
+                                    Trở thành Người bán
+                                </a>
+                            </li>
+                        <?php endif; ?>
+
                         <li class="header__navbar-item header__navbar-item--has-qr header__navbar-item--separate">
                             <a href="https://shopee.vn/web" class="header__navbar-item-link">
                                 Tải ứng dụng
@@ -148,7 +170,7 @@ session_start();
 
                         <li class="header__navbar-item header__navbar-user">
                             <?php
-                            if (!isset($_SESSION['full_name'])) {
+                            if (!isset($_SESSION['username'])) {
                                 // ❌ Chưa đăng nhập → Không hiển thị user-img
                                 echo '
                                          <li class="header__navbar-item header__navbar-item--separate">
@@ -170,14 +192,14 @@ session_start();
                                         d="M332.64 64.58C313.18 43.57 286 32 256 32c-30.16 0-57.43 11.5-76.8 32.38c-19.58 21.11-29.12 49.8-26.88 80.78C156.76 206.28 203.27 256 256 256s99.16-49.71 103.67-110.82c2.27-30.7-7.33-59.33-27.03-80.6M432 480H80a31 31 0 0 1-24.2-11.13c-6.5-7.77-9.12-18.38-7.18-29.11C57.06 392.94 83.4 353.61 124.8 326c36.78-24.51 83.37-38 131.2-38s94.42 13.5 131.2 38c41.4 27.6 67.74 66.93 76.18 113.75c1.94 10.73-.68 21.34-7.18 29.11A31 31 0 0 1 432 480" />
                                 </svg>
                             </div>
-                            <span class="header__navbar-user-name">' . htmlspecialchars($_SESSION['full_name']) . '</span>';
+                            <span class="header__navbar-user-name">' . htmlspecialchars($_SESSION['username']) . '</span>';
                             }
                             ?>
 
 
                             <ul class="header__navbar-user-menu">
                                 <li class="header__navbar-user-item">
-                                    <a href="">Tài Khoản Của Tôi</a>
+                                    <a href="edit_customer_info.php">Tài Khoản Của Tôi</a>
                                 </li>
                                 <li class="header__navbar-user-item">
                                     <a href="">Đơn Mua</a>
@@ -206,7 +228,7 @@ session_start();
                     <div class="header__search">
                         <div class="header__search-input-wrap">
                             <input type="text" class="header__search-input"
-                                placeholder="Tìm kiếm sản phẩm">
+                                placeholder="Tìm sản phẩm, thương hiệu, và tên shop">
 
                             <!-- header history -->
                             <div class="header__search-history">
@@ -250,33 +272,73 @@ session_start();
                     <div class="header__cart">
                         <div class="header__cart-wrap">
                             <i class="header__cart-icon fa fa-shopping-cart" aria-hidden="true"></i>
-                            <span class="header__cart-notice">1</span>
+                            <?php
+                            // Giả sử đã đăng nhập và lưu customer_id trong session
+                            $customer_id = $_SESSION['customer_id'] ?? null;
 
-                            <!-- No cart :  header__cart-list--no-cart-->
-                            <div class="header__cart-list header__cart-list--no-cart">
-                                <img src="../assets/img/cart-empty.png" alt="" class="header__cart-no-cart-img">
-                                <p class="header__cart-no-cart-description">Chưa Có Sản Phẩm</p>
+                            $cart_count = 0;
 
-                                <!-- <h4 class="header__cart-heading">Sản Phẩm Mới Thêm</h4> -->
-                                <ul class="header__cart-list-item">
-                                    <!-- Cart item -->
-                                    <!--<li class="header__cart-item">
-                                        <img src="../assets/img/giay.jpg" alt="" class="header__cart-img">
-                                        <div class="header__cart-item-info">
-                                            <div class="header__cart-item-head">
-                                                <h5 class="header__cart-item-name">Quần Đùi Nam ESSENTIAL chất cotton
-                                                    thấm mút mồ hôi chất lì không xù</h5>
-                                                <div class="header__cart-item-price-wrap">
-                                                    <span class="header__cart-item-price"><sup>₫</sup>400.000</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                                <button class="header__cart-view-cart btn btn--primary">
-                                    Xem giỏ hàng
-                                </button> -->
-                            </div>
+                            if ($customer_id) {
+                                $sql = "SELECT SUM(order_items.quantity) as total_items
+                                FROM orders
+                                JOIN order_items ON orders.order_id = order_items.order_id
+                                WHERE orders.customer_id = $customer_id AND orders.status = 'pending'";
+                                $result = mysqli_query($conn, $sql);
+                                if ($row = mysqli_fetch_assoc($result)) {
+                                    $cart_count = (int) $row['total_items'];
+                                }
+                            }
+
+                            // HTML
+                            if ($cart_count > 0) {
+                                echo '<span class="header__cart-notice">' . $cart_count . '</span>';
+                            }
+                            ?>
+
+
+                            <?php
+                            // Kiểm tra nếu giỏ hàng không trống
+                            if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
+                                echo '<div class="header__cart-list">';
+
+                                // Duyệt qua các sản phẩm trong giỏ hàng
+                                foreach ($_SESSION['cart'] as $item) {
+                                    $product_id = $item['product_id'];
+                                    $quantity = $item['quantity'];
+
+                                    // Truy vấn thông tin sản phẩm từ CSDL
+                                    $sql = "SELECT * FROM products WHERE product_id = $product_id";
+                                    $result = $conn->query($sql);
+
+                                    if ($result->num_rows > 0) {
+                                        $product = $result->fetch_assoc();
+
+                                        echo '<ul class="header__cart-list-item">';
+                                        echo '<li class="header__cart-item">';
+                                        echo '<img src="' . $product['image_url'] . '" alt="' . $product['name'] . '" class="header__cart-img">';
+                                        echo '<div class="header__cart-item-info">';
+                                        echo '<div class="header__cart-item-head">';
+                                        echo '<h5 class="header__cart-item-name">' . $product['name'] . '</h5>';
+                                        echo '<div class="header__cart-item-price-wrap">';
+                                        echo '<span class="header__cart-item-price"><sup>₫</sup>' . number_format($product['price'], 0, ',', '.') . '</span>';
+                                        echo '</div>';
+                                        echo '</div>';
+                                        echo '</div>';
+                                        echo '</li>';
+                                        echo '</ul>';
+                                    }
+                                }
+
+                                echo '<button class="header__cart-view-cart btn btn--primary">Xem giỏ hàng</button>';
+                                echo '</div>';
+                            } else {
+                                // Giỏ hàng trống
+                                echo '<div class="header__cart-list header__cart-list--no-cart">';
+                                echo '<img src="../assets/img/cart-empty.png" alt="" class="header__cart-no-cart-img">';
+                                echo '<p class="header__cart-no-cart-description">Chưa Có Sản Phẩm</p>';
+                                echo '</div>';
+                            }
+                            ?>
 
                         </div>
                     </div>
@@ -386,16 +448,24 @@ session_start();
                         </h3>
 
                         <ul class="category-list">
-                            <li class="category-item category-item--active">
-                                <a href="" class="category-item__link">Sặp</a>
-                            </li>
-                            <li class="category-item">
-                                <a href="" class="category-item__link">Giầy</a>
-                            </li>
-                            <li class="category-item">
-                                <a href="" class="category-item__link">Bút</a>
-                            </li>
+                            <?php
+                            $sql = "SELECT * FROM categories";
+                            $result = mysqli_query($conn, $sql);
+
+                            if ($result && mysqli_num_rows($result) > 0) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo '<li class="category-item">';
+                                    echo '<a href="category.php?id=' . $row['category_id'] . '" class="category-item__link">';
+                                    echo htmlspecialchars($row['name']); // chống XSS
+                                    echo '</a>';
+                                    echo '</li>';
+                                }
+                            } else {
+                                echo '<li class="category-item">Không có danh mục</li>';
+                            }
+                            ?>
                         </ul>
+
                     </nav>
                 </div>
 
@@ -443,203 +513,70 @@ session_start();
 
                     <div class="home-product">
                         <div class="grid__row">
-                            <div class="grid_col-2-4">
-                                <!-- Product iteam -->
-                                <a class="home-product-item">
-                                    <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lzujgk4wtllt8d_tn.webp"
-                                        alt="" class="home-product-item__img">
-                                    <h4 class="home-product-item__name">
-                                        <img src="../assets/img/like0.png" alt="" class="home-product-item__likeimg">
-                                        Áo khoác gió 2 mặt Picolo chất gió tráng bạc
-                                        chống nước, cản gió cản bụi
-                                    </h4>
-                                    <div class="home-product-item__price">
-                                        <span class="home-product-item__price-current">₫175.000</span>
-                                        <span class="home-product-item__price-sale">-30%</span>
-                                    </div>
-                                    <div class="home-product-item__chip">Rẻ Vô Địch</div>
-                                    <div class="home-product-item__evaluate">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-                                            viewBox="0 0 12 12" fill="none">
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
-                                                fill="url(#paint0_linear_1_7602)" />
-                                            <defs>
-                                                <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
-                                                    x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
-                                                    <stop stop-color="#FFCA11" />
-                                                    <stop offset="1" stop-color="#FFAD27" />
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
-                                        <div class="home-product-item__numstar"> 4.8</div>
-                                        <div class="home-product-item__sold">Đã bán 11,3k</div>
-                                    </div>
-                                    <div class="home-product-item__freeship">
-                                        <img src="../assets/img/freeship.png" alt=""
-                                            class="home-product-item__freeship-img">
-                                    </div>
+                            <?php
+                            $sql = "
+                             SELECT p.*, pi.image_url,
+                                 (SELECT COALESCE(AVG(rating), 0) FROM reviews r WHERE r.product_id = p.product_id) AS avg_rating
+                             FROM products p
+                             LEFT JOIN (
+                                 SELECT product_id, MIN(image_url) AS image_url
+                                 FROM product_images
+                                 GROUP BY product_id
+                             ) pi ON p.product_id = pi.product_id
+                             WHERE p.status = 'approved'
+                             ";
+                            $result = $conn->query($sql);
 
-                                </a>
-                            </div>
-                            <div class="grid_col-2-4">
-                                <!-- Product iteam -->
-                                <a class="home-product-item">
-                                    <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lzujgk4wtllt8d_tn.webp"
-                                        alt="" class="home-product-item__img">
-                                    <h4 class="home-product-item__name">
-                                        <img src="../assets/img/like0.png" alt="" class="home-product-item__likeimg">
-                                        Áo khoác gió 2 mặt Picolo chất gió tráng bạc
-                                        chống nước, cản gió cản bụi
-                                    </h4>
-                                    <div class="home-product-item__price">
-                                        <span class="home-product-item__price-current">₫175.000</span>
-                                        <span class="home-product-item__price-sale">-30%</span>
-                                    </div>
-                                    <div class="home-product-item__chip">Rẻ Vô Địch</div>
-                                    <div class="home-product-item__evaluate">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-                                            viewBox="0 0 12 12" fill="none">
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
-                                                fill="url(#paint0_linear_1_7602)" />
-                                            <defs>
-                                                <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
-                                                    x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
-                                                    <stop stop-color="#FFCA11" />
-                                                    <stop offset="1" stop-color="#FFAD27" />
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
-                                        <div class="home-product-item__numstar"> 4.8</div>
-                                        <div class="home-product-item__sold">Đã bán 11,3k</div>
-                                    </div>
-                                    <div class="home-product-item__freeship">
-                                        <img src="../assets/img/freeship.png" alt=""
-                                            class="home-product-item__freeship-img">
-                                    </div>
-
-                                </a>
-                            </div>
-                            <div class="grid_col-2-4">
-                                <!-- Product iteam -->
-                                <a class="home-product-item">
-                                    <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lzujgk4wtllt8d_tn.webp"
-                                        alt="" class="home-product-item__img">
-                                    <h4 class="home-product-item__name">
-                                        <img src="../assets/img/like0.png" alt="" class="home-product-item__likeimg">
-                                        Áo khoác gió 2 mặt Picolo chất gió tráng bạc
-                                        chống nước, cản gió cản bụi
-                                    </h4>
-                                    <div class="home-product-item__price">
-                                        <span class="home-product-item__price-current">₫175.000</span>
-                                        <span class="home-product-item__price-sale">-30%</span>
-                                    </div>
-                                    <div class="home-product-item__chip">Rẻ Vô Địch</div>
-                                    <div class="home-product-item__evaluate">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-                                            viewBox="0 0 12 12" fill="none">
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
-                                                fill="url(#paint0_linear_1_7602)" />
-                                            <defs>
-                                                <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
-                                                    x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
-                                                    <stop stop-color="#FFCA11" />
-                                                    <stop offset="1" stop-color="#FFAD27" />
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
-                                        <div class="home-product-item__numstar"> 4.8</div>
-                                        <div class="home-product-item__sold">Đã bán 11,3k</div>
-                                    </div>
-                                    <div class="home-product-item__freeship">
-                                        <img src="../assets/img/freeship.png" alt=""
-                                            class="home-product-item__freeship-img">
-                                    </div>
-
-                                </a>
-                            </div>
-                            <div class="grid_col-2-4">
-                                <!-- Product iteam -->
-                                <a class="home-product-item">
-                                    <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lzujgk4wtllt8d_tn.webp"
-                                        alt="" class="home-product-item__img">
-                                    <h4 class="home-product-item__name">
-                                        <img src="../assets/img/like0.png" alt="" class="home-product-item__likeimg">
-                                        Áo khoác gió 2 mặt Picolo chất gió tráng bạc
-                                        chống nước, cản gió cản bụi
-                                    </h4>
-                                    <div class="home-product-item__price">
-                                        <span class="home-product-item__price-current">₫175.000</span>
-                                        <span class="home-product-item__price-sale">-30%</span>
-                                    </div>
-                                    <div class="home-product-item__chip">Rẻ Vô Địch</div>
-                                    <div class="home-product-item__evaluate">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-                                            viewBox="0 0 12 12" fill="none">
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
-                                                fill="url(#paint0_linear_1_7602)" />
-                                            <defs>
-                                                <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
-                                                    x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
-                                                    <stop stop-color="#FFCA11" />
-                                                    <stop offset="1" stop-color="#FFAD27" />
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
-                                        <div class="home-product-item__numstar"> 4.8</div>
-                                        <div class="home-product-item__sold">Đã bán 11,3k</div>
-                                    </div>
-                                    <div class="home-product-item__freeship">
-                                        <img src="../assets/img/freeship.png" alt=""
-                                            class="home-product-item__freeship-img">
-                                    </div>
-
-                                </a>
-                            </div>
-                            <div class="grid_col-2-4">
-                                <!-- Product iteam -->
-                                <a class="home-product-item">
-                                    <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lzujgk4wtllt8d_tn.webp"
-                                        alt="" class="home-product-item__img">
-                                    <h4 class="home-product-item__name">
-                                        <img src="../assets/img/like0.png" alt="" class="home-product-item__likeimg">
-                                        Áo khoác gió 2 mặt Picolo chất gió tráng bạc
-                                        chống nước, cản gió cản bụi
-                                    </h4>
-                                    <div class="home-product-item__price">
-                                        <span class="home-product-item__price-current">₫175.000</span>
-                                        <span class="home-product-item__price-sale">-30%</span>
-                                    </div>
-                                    <div class="home-product-item__chip">Rẻ Vô Địch</div>
-                                    <div class="home-product-item__evaluate">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
-                                            viewBox="0 0 12 12" fill="none">
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
-                                                fill="url(#paint0_linear_1_7602)" />
-                                            <defs>
-                                                <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
-                                                    x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
-                                                    <stop stop-color="#FFCA11" />
-                                                    <stop offset="1" stop-color="#FFAD27" />
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
-                                        <div class="home-product-item__numstar"> 4.8</div>
-                                        <div class="home-product-item__sold">Đã bán 11,3k</div>
-                                    </div>
-                                    <div class="home-product-item__freeship">
-                                        <img src="../assets/img/freeship.png" alt=""
-                                            class="home-product-item__freeship-img">
-                                    </div>
-
-                                </a>
-                            </div>
-
+                            if ($result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    $name = $row['name'];
+                                    $price = number_format($row['price'], 0, '.', '.');
+                                    $image = '../assets/images/' . $row['image_url'];
+                                    $discount = $row['discount']; // lấy từ CSDL// bạn có thể thay bằng cột discount nếu có
+                                    $rating = number_format($row['avg_rating'], 1); // lấy điểm đánh giá trung bình từ CSDL
+                                    $sold = $row['sold'] . '+';  // Lấy số lượng đã bán từ cột `sold`
+                                    echo '
+            <!-- Product item -->
+            <div class="grid_col-2-4">
+                <a class="home-product-item">
+                    <img src="' . $image . '" alt="" class="home-product-item__img">
+                    <h4 class="home-product-item__name">
+                        <img src="../assets/img/like0.png" alt="" class="home-product-item__likeimg">
+                        ' . htmlspecialchars($name) . '
+                    </h4>
+                    <div class="home-product-item__price">
+                        <span class="home-product-item__price-current">₫' . $price . '</span>
+                        <span class="home-product-item__price-sale">-' . $discount . '%</span>
+                    </div>
+                    <div class="home-product-item__chip">Rẻ Vô Địch</div>
+                    <div class="home-product-item__evaluate">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 12 12" fill="none">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
+                                fill="url(#paint0_linear_1_7602)" />
+                            <defs>
+                                <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
+                                    x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#FFCA11" />
+                                    <stop offset="1" stop-color="#FFAD27" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="home-product-item__numstar">' . $rating . '</div>
+                        <div class="home-product-item__sold">Đã bán ' . $sold . '</div>
+                    </div>
+                    <div class="home-product-item__freeship">
+                        <img src="../assets/img/freeship.png" alt="" class="home-product-item__freeship-img">
+                    </div>
+                </a>
+            </div>';
+                                }
+                            } else {
+                                echo "<p>Chưa có sản phẩm nào được duyệt.</p>";
+                            }
+                            ?>
                         </div>
+
                     </div>
 
                     <ul class="pagination home-product__pagination">
@@ -979,3 +916,11 @@ session_start();
 
 </html>
 <script src="../assets/js/main.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Kiểm tra nếu trang trước đó là trang đăng nhập
+        if (document.referrer.includes("login.php") && <?php echo isset($_SESSION['username']) ? 'true' : 'false'; ?>) {
+            window.location.href = "user.php";
+        }
+    });
+</script>
