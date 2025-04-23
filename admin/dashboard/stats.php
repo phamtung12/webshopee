@@ -1,27 +1,22 @@
 <?php
 $conn = mysqli_connect("localhost", "root", "phamtung", "qlbh");
-include 'header.php';
+include '../header.php';
 
 // Thống kê người dùng theo vai trò
-$userStats = mysqli_query($conn, "
-    SELECT role, COUNT(*) as total FROM users GROUP BY role
-");
+$userStats = mysqli_query($conn, "SELECT role, COUNT(*) as total FROM users GROUP BY role");
 
 // Tổng sản phẩm
-$productResult = mysqli_query($conn, "SELECT COUNT(*) as total FROM products");
-$productTotal = mysqli_fetch_assoc($productResult)['total'];
+$productTotal = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM products"))['total'] ?? 0;
 
 // Tổng đơn hàng
-$orderResult = mysqli_query($conn, "SELECT COUNT(*) as total FROM orders");
-$orderTotal = mysqli_fetch_assoc($orderResult)['total'];
+$orderTotal = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM orders"))['total'] ?? 0;
 
-// Doanh thu (paid hoặc delivered)
-$revenueResult = mysqli_query($conn, "
+// Doanh thu
+$revenue = mysqli_fetch_assoc(mysqli_query($conn, "
     SELECT SUM(total_price) as total FROM orders WHERE status IN ('paid', 'delivered')
-");
-$revenue = mysqli_fetch_assoc($revenueResult)['total'];
+"))['total'] ?? 0;
 
-// Dữ liệu đơn hàng theo tháng
+// Đơn hàng theo tháng
 $orderChart = mysqli_query($conn, "
     SELECT MONTH(order_date) as month, COUNT(*) as total
     FROM orders
@@ -38,20 +33,49 @@ while ($row = mysqli_fetch_assoc($orderChart)) {
 }
 ?>
 
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    h2 {
+        text-align: center;
+        margin-top: 20px;
+        color: #333;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin-left: 30px;
+        font-size: 17px;
+    }
+
+    li {
+        margin: 8px 0;
+    }
+
+    canvas {
+        display: block;
+        margin: 30px auto;
+        max-width: 90%;
+    }
+</style>
+
 <h2>📊 Bảng điều khiển thống kê</h2>
 
-<h3>Người dùng theo vai trò</h3>
+<h3>👥 Người dùng theo vai trò</h3>
 <ul>
     <?php while ($row = mysqli_fetch_assoc($userStats)) : ?>
-        <li><?= ucfirst($row['role']) ?>: <?= $row['total'] ?></li>
+        <li>🔹 <strong><?= ucfirst($row['role']) ?>:</strong> <?= $row['total'] ?></li>
     <?php endwhile; ?>
 </ul>
 
-<h3>Tổng số</h3>
+<h3>📌 Tổng số</h3>
 <ul>
-    <li>🛍️ Sản phẩm: <?= $productTotal ?></li>
-    <li>📦 Đơn hàng: <?= $orderTotal ?></li>
-    <li>💰 Doanh thu: <?= number_format($revenue, 0, ',', '.') ?> VND</li>
+    <li>🛍️ <strong>Sản phẩm:</strong> <?= $productTotal ?></li>
+    <li>📦 <strong>Đơn hàng:</strong> <?= $orderTotal ?></li>
+    <li>💰 <strong>Doanh thu:</strong> <?= number_format($revenue, 0, ',', '.') ?> VND</li>
 </ul>
 
 <h3>📈 Biểu đồ đơn hàng theo tháng</h3>
@@ -67,21 +91,32 @@ while ($row = mysqli_fetch_assoc($orderChart)) {
             datasets: [{
                 label: 'Số lượng đơn hàng',
                 data: <?= json_encode($orderCounts) ?>,
-                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
-                borderRadius: 5
+                borderRadius: 6
             }]
         },
         options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true
+                },
+                tooltip: {
+                    enabled: true
+                }
+            },
             scales: {
                 y: {
                     beginAtZero: true,
-                    stepSize: 1
+                    ticks: {
+                        stepSize: 1
+                    }
                 }
             }
         }
     });
 </script>
 
-<?php include './admin/footer.php'; ?>
+<?php include '../footer.php'; ?>

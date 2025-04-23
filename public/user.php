@@ -17,8 +17,8 @@ if ($_SESSION['role'] !== 'customer' && $_SESSION['role'] !== 'seller') {
     echo "<script>alert('Bạn không có quyền truy cập trang này.'); window.location.href = 'user.php';</script>";
     exit();
 }
-?>
-
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+$is_searching = !empty($search_query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -225,21 +225,23 @@ if ($_SESSION['role'] !== 'customer' && $_SESSION['role'] !== 'seller') {
                             </svg>
                         </a>
                     </div>
-                    <div class="header__search">
+                    <form class="header__search" method="GET" action="">
                         <div class="header__search-input-wrap">
                             <input type="text" class="header__search-input"
-                                placeholder="Tìm sản phẩm, thương hiệu, và tên shop">
+                                placeholder="Tìm sản phẩm, thương hiệu, và tên shop" name="search" value="<?php echo htmlspecialchars($search_query); ?>">
 
                             <!-- header history -->
-                            <div class="header__search-history">
-                                <ul class="header__search-history-list">
-                                    <li class="header__search-history-item">
-                                        <a class="header__search-history-link" href="">
-                                            <span class="history__text">Bàn phím</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                            <?php if ($search_query !== ''): ?>
+                                <div class="header__search-history">
+                                    <ul class="header__search-history-list">
+                                        <li class="header__search-history-item">
+                                            <a class="header__search-history-link" href="?search=<?= htmlspecialchars($search_query) ?>">
+                                                <span class="history__text"><?= htmlspecialchars($search_query) ?></span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            <?php endif; ?>
                         </div>
                         <button class="header__search-btn">
                             <i class="header__search-btn-icon fa fa-search" aria-hidden="true"></i>
@@ -266,7 +268,7 @@ if ($_SESSION['role'] !== 'customer' && $_SESSION['role'] !== 'seller') {
                                 <a href="" class="product__suggest-link">Ống Nhòm</a>
                             </li>
                         </ul>
-                    </div>
+                    </form>
 
                     <!-- Cart layout -->
                     <div class="header__cart">
@@ -511,10 +513,11 @@ if ($_SESSION['role'] !== 'customer' && $_SESSION['role'] !== 'seller') {
                         </div>
                     </div>
 
-                    <div class="home-product">
-                        <div class="grid__row">
-                            <?php
-                            $sql = "
+                    <?php if (!$is_searching): ?>
+                        <div class="home-product">
+                            <div class="grid__row">
+                                <?php
+                                $sql = "
                              SELECT p.*, pi.image_url,
                                  (SELECT COALESCE(AVG(rating), 0) FROM reviews r WHERE r.product_id = p.product_id) AS avg_rating
                              FROM products p
@@ -525,59 +528,162 @@ if ($_SESSION['role'] !== 'customer' && $_SESSION['role'] !== 'seller') {
                              ) pi ON p.product_id = pi.product_id
                              WHERE p.status = 'approved'
                              ";
-                            $result = $conn->query($sql);
+                                $result = $conn->query($sql);
 
-                            if ($result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        $name = $row['name'];
+                                        $price = number_format($row['price'], 0, '.', '.');
+                                        $image = '../assets/images/' . $row['image_url'];
+                                        $discount = $row['discount']; // lấy từ CSDL// bạn có thể thay bằng cột discount nếu có
+                                        $rating = number_format($row['avg_rating'], 1); // lấy điểm đánh giá trung bình từ CSDL
+                                        $sold = $row['sold'] . '+';  // Lấy số lượng đã bán từ cột `sold`
+                                        echo '
+                                            <!-- Product item -->
+                                            <div class="grid_col-2-4">
+                                                <a class="home-product-item">
+                                                    <img src="' . $image . '" alt="" class="home-product-item__img">
+                                                    <h4 class="home-product-item__name">
+                                                        <img src="../assets/img/like0.png" alt="" class="home-product-item__likeimg">
+                                                        ' . htmlspecialchars($name) . '
+                                                    </h4>
+                                                    <div class="home-product-item__price">
+                                                        <span class="home-product-item__price-current">₫' . $price . '</span>
+                                                        <span class="home-product-item__price-sale">-' . $discount . '%</span>
+                                                    </div>
+                                                    <div class="home-product-item__chip">Rẻ Vô Địch</div>
+                                                    <div class="home-product-item__evaluate">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 12 12" fill="none">
+                                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
+                                                                fill="url(#paint0_linear_1_7602)" />
+                                                            <defs>
+                                                                <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
+                                                                    x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
+                                                                    <stop stop-color="#FFCA11" />
+                                                                    <stop offset="1" stop-color="#FFAD27" />
+                                                                </linearGradient>
+                                                            </defs>
+                                                        </svg>
+                                                        <div class="home-product-item__numstar">' . $rating . '</div>
+                                                        <div class="home-product-item__sold">Đã bán ' . $sold . '</div>
+                                                    </div>
+                                                    <div class="home-product-item__freeship">
+                                                        <img src="../assets/img/freeship.png" alt="" class="home-product-item__freeship-img">
+                                                    </div>
+                                                </a>
+                                            </div>';
+                                    }
+                                } else {
+                                    echo "<p>Chưa có sản phẩm nào được duyệt.</p>";
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Kết quả tìm kiếm -->
+                    <?php if ($is_searching): ?>
+                        <!-- Kết quả Tìm kiếm -->
+                        <div class="search-results">
+                            <?php
+                            // Lấy từ khóa tìm kiếm từ form
+                            $search_query = isset($_GET['search']) ? $_GET['search'] : '';
+
+                            // Truy vấn tìm kiếm sản phẩm theo tên hoặc mô tả
+                            $sql = "
+                                SELECT p.*, pi.image_url,
+                                    (SELECT COALESCE(AVG(rating), 0) FROM reviews r WHERE r.product_id = p.product_id) AS avg_rating
+                                FROM products p
+                                LEFT JOIN (
+                                    SELECT product_id, MIN(image_url) AS image_url
+                                    FROM product_images
+                                    GROUP BY product_id
+                                ) pi ON p.product_id = pi.product_id
+                                WHERE (p.name LIKE '%$search_query%' OR p.description LIKE '%$search_query%') AND p.status = 'approved'";
+
+
+                            $result = mysqli_query($conn, $sql);
+
+                            // Hiển thị kết quả tìm kiếm
+                            if (mysqli_num_rows($result) > 0) {
+                                // Hiển thị tiêu đề kết quả tìm kiếm
+                                echo '<div class="search-title">';
+                                echo '<svg viewBox="0 0 18 24" class="search-title__icon">
+                                        <g transform="translate(-355 -149)">
+                                            <g transform="translate(355 149)">
+                                                <g fill-rule="nonzero" transform="translate(5.4 19.155556)">
+                                                    <path d="m1.08489412 1.77777778h5.1879153c.51164401 0 .92641344-.39796911.92641344-.88888889s-.41476943-.88888889-.92641344-.88888889h-5.1879153c-.51164402 0-.92641345.39796911-.92641345.88888889s.41476943.88888889.92641345.88888889z"></path>
+                                                    <g transform="translate(1.9 2.666667)">
+                                                        <path d="m .75 1.77777778h2.1c.41421356 0 .75-.39796911.75-.88888889s-.33578644-.88888889-.75-.88888889h-2.1c-.41421356 0-.75.39796911-.75.88888889s.33578644.88888889.75.88888889z"></path>
+                                                    </g>
+                                                </g>
+                                                <path d="m8.1 8.77777718v4.66666782c0 .4295545.40294373.7777772.9.7777772s.9-.3482227.9-.7777772v-4.66666782c0-.42955447-.40294373-.77777718-.9-.77777718s-.9.34822271-.9.77777718z" fill-rule="nonzero"></path>
+                                                <path d="m8.1 5.33333333v.88889432c0 .49091978.40294373.88888889.9.88888889s.9-.39796911.9-.88888889v-.88889432c0-.49091977-.40294373-.88888889-.9-.88888889s-.9.39796912-.9.88888889z" fill-rule="nonzero"></path>
+                                                <path d="m8.80092773 0c-4.86181776 0-8.80092773 3.97866667-8.80092773 8.88888889 0 1.69422221.47617651 3.26933331 1.295126 4.61333331l2.50316913 3.9768889c.30201078.4782222.84303623.7697778 1.42482388.7697778h7.17785139c.7077799 0 1.3618277-.368 1.7027479-.9617778l2.3252977-4.0213333c.7411308-1.2888889 1.1728395-2.7786667 1.1728395-4.37688891 0-4.91022222-3.9409628-8.88888889-8.80092777-8.88888889m0 1.77777778c3.82979317 0 6.94810087 3.18933333 6.94810087 7.11111111 0 1.24444441-.3168334 2.43022221-.9393833 3.51466671l-2.3252977 4.0213333c-.0166754.0284444-.0481735.0462222-.0833772.0462222h-7.07224026l-2.43461454-3.8648889c-.68184029-1.12-1.04128871-2.4053333-1.04128871-3.71733331 0-3.92177778 3.11645483-7.11111111 6.94810084-7.11111111"></path>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                    Kết quả tìm kiếm cho từ khóa : <strong>' . htmlspecialchars($search_query) . '</strong>';
+
+                                echo '</div>';
+
+                                echo '<div class="grid__row">';
+                                while ($row = mysqli_fetch_assoc($result)) {
                                     $name = $row['name'];
                                     $price = number_format($row['price'], 0, '.', '.');
                                     $image = '../assets/images/' . $row['image_url'];
-                                    $discount = $row['discount']; // lấy từ CSDL// bạn có thể thay bằng cột discount nếu có
-                                    $rating = number_format($row['avg_rating'], 1); // lấy điểm đánh giá trung bình từ CSDL
-                                    $sold = $row['sold'] . '+';  // Lấy số lượng đã bán từ cột `sold`
+                                    $discount = $row['discount'];
+                                    $rating = number_format($row['avg_rating'], 1);
+                                    $sold = $row['sold'];
+
                                     echo '
-            <!-- Product item -->
-            <div class="grid_col-2-4">
-                <a class="home-product-item">
-                    <img src="' . $image . '" alt="" class="home-product-item__img">
-                    <h4 class="home-product-item__name">
-                        <img src="../assets/img/like0.png" alt="" class="home-product-item__likeimg">
-                        ' . htmlspecialchars($name) . '
-                    </h4>
-                    <div class="home-product-item__price">
-                        <span class="home-product-item__price-current">₫' . $price . '</span>
-                        <span class="home-product-item__price-sale">-' . $discount . '%</span>
-                    </div>
-                    <div class="home-product-item__chip">Rẻ Vô Địch</div>
-                    <div class="home-product-item__evaluate">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 12 12" fill="none">
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
-                                fill="url(#paint0_linear_1_7602)" />
-                            <defs>
-                                <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
-                                    x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#FFCA11" />
-                                    <stop offset="1" stop-color="#FFAD27" />
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                        <div class="home-product-item__numstar">' . $rating . '</div>
-                        <div class="home-product-item__sold">Đã bán ' . $sold . '</div>
-                    </div>
-                    <div class="home-product-item__freeship">
-                        <img src="../assets/img/freeship.png" alt="" class="home-product-item__freeship-img">
-                    </div>
-                </a>
-            </div>';
+                                    <!-- Product item -->
+                                    <div class="grid__col-6">
+                                        <a class="home-product-item">
+                                            <img src="' . $image . '" alt="" class="home-product-item__img">
+                                            <h4 class="home-product-item__name">
+                                                <img src="../assets/img/like0.png" alt="" class="home-product-item__likeimg">
+                                                ' . htmlspecialchars($name) . '
+                                            </h4>
+                                            <div class="home-product-item__price">
+                                                <span class="home-product-item__price-current">₫' . $price . '</span>
+                                                <span class="home-product-item__price-sale">-' . $discount . '%</span>
+                                            </div>
+                                            <div class="home-product-item__chip">Rẻ Vô Địch</div>
+                                            <div class="home-product-item__evaluate">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 12 12" fill="none">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
+                                                        fill="url(#paint0_linear_1_7602)" />
+                                                    <defs>
+                                                        <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
+                                                            x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
+                                                            <stop stop-color="#FFCA11" />
+                                                            <stop offset="1" stop-color="#FFAD27" />
+                                                        </linearGradient>
+                                                    </defs>
+                                                </svg>
+                                                <div class="home-product-item__numstar">' . $rating . '</div>
+                                                <div class="home-product-item__sold">Đã bán ' . $sold . '</div>
+                                            </div>
+                                            <div class="home-product-item__freeship">
+                                                <img src="../assets/img/freeship.png" alt="" class="home-product-item__freeship-img">
+                                            </div>
+                                        </a>
+                                    </div>';
                                 }
+                                echo '</div>'; // kết thúc grid__row
                             } else {
-                                echo "<p>Chưa có sản phẩm nào được duyệt.</p>";
+                                echo '<div class="no-result">Không tìm thấy sản phẩm nào phù hợp.</div>';
                             }
+
+                            // Đóng kết nối
+                            mysqli_close($conn);
                             ?>
                         </div>
+                    <?php endif; ?>
 
-                    </div>
 
                     <ul class="pagination home-product__pagination">
                         <li class="pagination-item">

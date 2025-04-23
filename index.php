@@ -1,7 +1,8 @@
 <?php
 require_once './db.php';
 session_start();
-
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+$is_searching = !empty($search_query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -194,24 +195,31 @@ session_start();
                             </svg>
                         </a>
                     </div>
-                    <div class="header__search">
+                    <form class="header__search" method="GET" action="">
                         <div class="header__search-input-wrap">
                             <input type="text" class="header__search-input"
-                                placeholder="Shopee bao ship 0Đ - Đăng ký ngay!">
+                                placeholder="Shopee bao ship 0Đ - Đăng ký ngay!" name="search" value="<?php echo htmlspecialchars($search_query); ?>" placeholder="Tìm kiếm">
 
                             <!-- header history -->
-                            <div class="header__search-history">
-                                <ul class="header__search-history-list">
-                                    <li class="header__search-history-item">
-                                        <a class="header__search-history-link" href="https://shopee.vn/welcome-package">
-                                            <span class="history__text">Shopee bao ship 0Đ - Đăng ký ngay!</span>
-                                            <img src="./assets/img/free.png" alt="" class="history__img">
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                            <?php if ($search_query !== ''): ?>
+                                <div class="header__search-history">
+                                    <ul class="header__search-history-list">
+                                        <li class="header__search-history-item">
+                                            <a class="header__search-history-link" href="https://shopee.vn/welcome-package">
+                                                <span class="history__text">Shopee bao ship 0Đ - Đăng ký ngay!</span>
+                                                <img src="./assets/img/free.png" alt="" class="history__img">
+                                            </a>
+                                        </li>
+                                        <li class="header__search-history-item">
+                                            <a class="header__search-history-link" href="?search=<?= htmlspecialchars($search_query) ?>">
+                                                <span class="history__text"><?= htmlspecialchars($search_query) ?></span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            <?php endif; ?>
                         </div>
-                        <button class="header__search-btn">
+                        <button class="header__search-btn" type="submit">
                             <i class="header__search-btn-icon fa fa-search" aria-hidden="true"></i>
                         </button>
 
@@ -236,7 +244,7 @@ session_start();
                                 <a href="" class="product__suggest-link">Ống Nhòm</a>
                             </li>
                         </ul>
-                    </div>
+                    </form>
 
                     <!-- Cart layout -->
                     <div class="header__cart">
@@ -254,7 +262,6 @@ session_start();
                 </div>
             </div>
 
-            <!-- Header Mobile -->
 
         </header>
 
@@ -340,7 +347,7 @@ session_start();
                     <div class="product__suggest">
                         Gợi ý hôm nay
                     </div>
-                    <div class="home-product">
+                    <?php if (!$is_searching): ?>
                         <div class="home-product">
                             <div class="grid__row">
                                 <?php
@@ -366,40 +373,40 @@ session_start();
                                         $rating = number_format($row['avg_rating'], 1); // lấy điểm đánh giá trung bình từ CSDL
                                         $sold = $row['sold'];  // Lấy số lượng đã bán từ cột `sold`
                                         echo '
-            <!-- Product item -->
-            <div class="grid__col-6">
-                <a class="home-product-item">
-                    <img src="' . $image . '" alt="" class="home-product-item__img">
-                    <h4 class="home-product-item__name">
-                        <img src="../assets/img/like0.png" alt="" class="home-product-item__likeimg">
-                        ' . htmlspecialchars($name) . '
-                    </h4>
-                    <div class="home-product-item__price">
-                        <span class="home-product-item__price-current">₫' . $price . '</span>
-                        <span class="home-product-item__price-sale">-' . $discount . '%</span>
-                    </div>
-                    <div class="home-product-item__chip">Rẻ Vô Địch</div>
-                    <div class="home-product-item__evaluate">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 12 12" fill="none">
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
-                                fill="url(#paint0_linear_1_7602)" />
-                            <defs>
-                                <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
-                                    x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#FFCA11" />
-                                    <stop offset="1" stop-color="#FFAD27" />
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                        <div class="home-product-item__numstar">' . $rating . '</div>
-                        <div class="home-product-item__sold">Đã bán ' . $sold . '</div>
-                    </div>
-                    <div class="home-product-item__freeship">
-                        <img src="../assets/img/freeship.png" alt="" class="home-product-item__freeship-img">
-                    </div>
-                </a>
-            </div>';
+                                            <!-- Product item -->
+                                            <div class="grid__col-6">
+                                                <a class="home-product-item">
+                                                    <img src="' . $image . '" alt="" class="home-product-item__img">
+                                                    <h4 class="home-product-item__name">
+                                                        <img src="./assets/img/like0.png" alt="" class="home-product-item__likeimg">
+                                                        ' . htmlspecialchars($name) . '
+                                                    </h4>
+                                                    <div class="home-product-item__price">
+                                                        <span class="home-product-item__price-current">₫' . $price . '</span>
+                                                        <span class="home-product-item__price-sale">-' . $discount . '%</span>
+                                                    </div>
+                                                    <div class="home-product-item__chip">Rẻ Vô Địch</div>
+                                                    <div class="home-product-item__evaluate">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 12 12" fill="none">
+                                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
+                                                                fill="url(#paint0_linear_1_7602)" />
+                                                            <defs>
+                                                                <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
+                                                                    x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
+                                                                    <stop stop-color="#FFCA11" />
+                                                                    <stop offset="1" stop-color="#FFAD27" />
+                                                                </linearGradient>
+                                                            </defs>
+                                                        </svg>
+                                                        <div class="home-product-item__numstar">' . $rating . '</div>
+                                                        <div class="home-product-item__sold">Đã bán ' . $sold . '</div>
+                                                    </div>
+                                                    <div class="home-product-item__freeship">
+                                                        <img src="../assets/img/freeship.png" alt="" class="home-product-item__freeship-img">
+                                                    </div>
+                                                </a>
+                                            </div>';
                                     }
                                 } else {
                                     echo "<p>Chưa có sản phẩm nào được duyệt.</p>";
@@ -407,336 +414,439 @@ session_start();
                                 ?>
                             </div>
                         </div>
-                        <ul class="pagination home-product__pagination">
-                            <li class="pagination-item">
-                                <a href="" class="pagination-item__link">
-                                    <svg enable-background="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" height="16"
-                                        width="16">
-                                        <g>
-                                            <path fill="#939393"
-                                                d="m8.5 11c-.1 0-.2 0-.3-.1l-6-5c-.1-.1-.2-.3-.2-.4s.1-.3.2-.4l6-5c .2-.2.5-.1.7.1s.1.5-.1.7l-5.5 4.6 5.5 4.6c.2.2.2.5.1.7-.1.1-.3.2-.4.2z">
-                                            </path>
+                    <?php endif; ?>
+                    <!-- Kết quả tìm kiếm -->
+                    <?php if ($is_searching): ?>
+                        <!-- Kết quả Tìm kiếm -->
+                        <div class="search-results">
+                            <?php
+                            // Lấy từ khóa tìm kiếm từ form
+                            $search_query = isset($_GET['search']) ? $_GET['search'] : '';
+
+                            // Truy vấn tìm kiếm sản phẩm theo tên hoặc mô tả
+                            $sql = "
+                                SELECT p.*, pi.image_url,
+                                    (SELECT COALESCE(AVG(rating), 0) FROM reviews r WHERE r.product_id = p.product_id) AS avg_rating
+                                FROM products p
+                                LEFT JOIN (
+                                    SELECT product_id, MIN(image_url) AS image_url
+                                    FROM product_images
+                                    GROUP BY product_id
+                                ) pi ON p.product_id = pi.product_id
+                                WHERE (p.name LIKE '%$search_query%' OR p.description LIKE '%$search_query%') AND p.status = 'approved'";
+
+
+                            $result = mysqli_query($conn, $sql);
+
+                            // Hiển thị kết quả tìm kiếm
+                            if (mysqli_num_rows($result) > 0) {
+                                // Hiển thị tiêu đề kết quả tìm kiếm
+                                echo '<div class="search-title">';
+                                echo '<svg viewBox="0 0 18 24" class="search-title__icon">
+                                        <g transform="translate(-355 -149)">
+                                            <g transform="translate(355 149)">
+                                                <g fill-rule="nonzero" transform="translate(5.4 19.155556)">
+                                                    <path d="m1.08489412 1.77777778h5.1879153c.51164401 0 .92641344-.39796911.92641344-.88888889s-.41476943-.88888889-.92641344-.88888889h-5.1879153c-.51164402 0-.92641345.39796911-.92641345.88888889s.41476943.88888889.92641345.88888889z"></path>
+                                                    <g transform="translate(1.9 2.666667)">
+                                                        <path d="m .75 1.77777778h2.1c.41421356 0 .75-.39796911.75-.88888889s-.33578644-.88888889-.75-.88888889h-2.1c-.41421356 0-.75.39796911-.75.88888889s.33578644.88888889.75.88888889z"></path>
+                                                    </g>
+                                                </g>
+                                                <path d="m8.1 8.77777718v4.66666782c0 .4295545.40294373.7777772.9.7777772s.9-.3482227.9-.7777772v-4.66666782c0-.42955447-.40294373-.77777718-.9-.77777718s-.9.34822271-.9.77777718z" fill-rule="nonzero"></path>
+                                                <path d="m8.1 5.33333333v.88889432c0 .49091978.40294373.88888889.9.88888889s.9-.39796911.9-.88888889v-.88889432c0-.49091977-.40294373-.88888889-.9-.88888889s-.9.39796912-.9.88888889z" fill-rule="nonzero"></path>
+                                                <path d="m8.80092773 0c-4.86181776 0-8.80092773 3.97866667-8.80092773 8.88888889 0 1.69422221.47617651 3.26933331 1.295126 4.61333331l2.50316913 3.9768889c.30201078.4782222.84303623.7697778 1.42482388.7697778h7.17785139c.7077799 0 1.3618277-.368 1.7027479-.9617778l2.3252977-4.0213333c.7411308-1.2888889 1.1728395-2.7786667 1.1728395-4.37688891 0-4.91022222-3.9409628-8.88888889-8.80092777-8.88888889m0 1.77777778c3.82979317 0 6.94810087 3.18933333 6.94810087 7.11111111 0 1.24444441-.3168334 2.43022221-.9393833 3.51466671l-2.3252977 4.0213333c-.0166754.0284444-.0481735.0462222-.0833772.0462222h-7.07224026l-2.43461454-3.8648889c-.68184029-1.12-1.04128871-2.4053333-1.04128871-3.71733331 0-3.92177778 3.11645483-7.11111111 6.94810084-7.11111111"></path>
+                                            </g>
                                         </g>
                                     </svg>
-                                </a>
-                            </li>
-                            <li class="pagination-item pagination-item--active">
-                                <a href="" class="pagination-item__link">
-                                    1
-                                </a>
-                            </li>
-                            <li class="pagination-item">
-                                <a href="" class="pagination-item__link">
-                                    2
-                                </a>
-                            </li>
-                            <li class="pagination-item">
-                                <a href="" class="pagination-item__link">
-                                    3
-                                </a>
-                            </li>
-                            <li class="pagination-item">
-                                <a href="" class="pagination-item__link">
-                                    4
-                                </a>
-                            </li>
-                            <li class="pagination-item">
-                                <a href="" class="pagination-item__link">
-                                    5
-                                </a>
-                            </li>
-                            <li class="pagination-item">
-                                <a href="" class="pagination-item__link">
-                                    ...
-                                </a>
-                            </li>
-                            <li class="pagination-item">
-                                <a href="" class="pagination-item__link">
-                                    <svg enable-background="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" height="16"
-                                        width="16">
+                                    Kết quả tìm kiếm cho từ khóa : <strong>' . htmlspecialchars($search_query) . '</strong>';
+
+                                echo '</div>';
+
+                                echo '<div class="grid__row">';
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    $name = $row['name'];
+                                    $price = number_format($row['price'], 0, '.', '.');
+                                    $image = './assets/images/' . $row['image_url'];
+                                    $discount = $row['discount'];
+                                    $rating = number_format($row['avg_rating'], 1);
+                                    $sold = $row['sold'];
+
+                                    echo '
+                                    <!-- Product item -->
+                                    <div class="grid__col-6">
+                                        <a class="home-product-item">
+                                            <img src="' . $image . '" alt="" class="home-product-item__img">
+                                            <h4 class="home-product-item__name">
+                                                <img src="./assets/img/like0.png" alt="" class="home-product-item__likeimg">
+                                                ' . htmlspecialchars($name) . '
+                                            </h4>
+                                            <div class="home-product-item__price">
+                                                <span class="home-product-item__price-current">₫' . $price . '</span>
+                                                <span class="home-product-item__price-sale">-' . $discount . '%</span>
+                                            </div>
+                                            <div class="home-product-item__chip">Rẻ Vô Địch</div>
+                                            <div class="home-product-item__evaluate">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 12 12" fill="none">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M5.99983 9.93762L2.76524 11.7208C2.54602 11.8417 2.28393 11.6567 2.32433 11.4097L2.94569 7.61076L0.300721 4.9072C0.129793 4.73248 0.228342 4.43764 0.469974 4.40083L4.11226 3.84584L5.72839 0.411994C5.83648 0.18233 6.16317 0.18233 6.27126 0.411995L7.88739 3.84584L11.5297 4.40083C11.7713 4.43764 11.8699 4.73248 11.6989 4.9072L9.05396 7.61076L9.67532 11.4097C9.71572 11.6567 9.45364 11.8417 9.23441 11.7208L5.99983 9.93762Z"
+                                                        fill="url(#paint0_linear_1_7602)" />
+                                                    <defs>
+                                                        <linearGradient id="paint0_linear_1_7602" x1="0.299805" y1="0.29985"
+                                                            x2="0.299805" y2="11.6998" gradientUnits="userSpaceOnUse">
+                                                            <stop stop-color="#FFCA11" />
+                                                            <stop offset="1" stop-color="#FFAD27" />
+                                                        </linearGradient>
+                                                    </defs>
+                                                </svg>
+                                                <div class="home-product-item__numstar">' . $rating . '</div>
+                                                <div class="home-product-item__sold">Đã bán ' . $sold . '</div>
+                                            </div>
+                                            <div class="home-product-item__freeship">
+                                                <img src="../assets/img/freeship.png" alt="" class="home-product-item__freeship-img">
+                                            </div>
+                                        </a>
+                                    </div>';
+                                }
+                                echo '</div>'; // kết thúc grid__row
+                            } else {
+                                echo '<div class="no-result">Không tìm thấy sản phẩm nào phù hợp.</div>';
+                            }
+
+                            // Đóng kết nối
+                            mysqli_close($conn);
+                            ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <ul class="pagination home-product__pagination">
+                        <li class="pagination-item">
+                            <a href="" class="pagination-item__link">
+                                <svg enable-background="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" height="16"
+                                    width="16">
+                                    <g>
                                         <path fill="#939393"
-                                            d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z">
+                                            d="m8.5 11c-.1 0-.2 0-.3-.1l-6-5c-.1-.1-.2-.3-.2-.4s.1-.3.2-.4l6-5c .2-.2.5-.1.7.1s.1.5-.1.7l-5.5 4.6 5.5 4.6c.2.2.2.5.1.7-.1.1-.3.2-.4.2z">
                                         </path>
-                                    </svg>
-                                </a>
-                            </li>
-                        </ul>
+                                    </g>
+                                </svg>
+                            </a>
+                        </li>
+                        <li class="pagination-item pagination-item--active">
+                            <a href="" class="pagination-item__link">
+                                1
+                            </a>
+                        </li>
+                        <li class="pagination-item">
+                            <a href="" class="pagination-item__link">
+                                2
+                            </a>
+                        </li>
+                        <li class="pagination-item">
+                            <a href="" class="pagination-item__link">
+                                3
+                            </a>
+                        </li>
+                        <li class="pagination-item">
+                            <a href="" class="pagination-item__link">
+                                4
+                            </a>
+                        </li>
+                        <li class="pagination-item">
+                            <a href="" class="pagination-item__link">
+                                5
+                            </a>
+                        </li>
+                        <li class="pagination-item">
+                            <a href="" class="pagination-item__link">
+                                ...
+                            </a>
+                        </li>
+                        <li class="pagination-item">
+                            <a href="" class="pagination-item__link">
+                                <svg enable-background="new 0 0 11 11" viewBox="0 0 11 11" x="0" y="0" height="16"
+                                    width="16">
+                                    <path fill="#939393"
+                                        d="m2.5 11c .1 0 .2 0 .3-.1l6-5c .1-.1.2-.3.2-.4s-.1-.3-.2-.4l-6-5c-.2-.2-.5-.1-.7.1s-.1.5.1.7l5.5 4.6-5.5 4.6c-.2.2-.2.5-.1.7.1.1.3.2.4.2z">
+                                    </path>
+                                </svg>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <footer class="footer">
+        <div class="grid wide">
+            <div class="grid__row">
+                <div class="grid_col-2-4">
+                    <h3 class="footer__heading">DỊCH VỤ KHÁCH HÀNG</h3>
+                    <ul class="footer-list">
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Trung Tâm Trợ Giúp Shopee</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Shopee Blog</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Shopee Mall</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Hướng Dẫn Mua Hàng/Đặt Hàng</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Hướng Dẫn Bán Hàng</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Ví ShopeePay</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Shopee Xu</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Đơn Hàng</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Trả Hàng/Hoàn Tiền</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Liên Hệ Shopee</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Chính Sách Bảo Hành</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="grid_col-2-4">
+                    <h3 class="footer__heading">SHOPEE VIỆT NAM</h3>
+                    <ul class="footer-list">
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Về Shopee</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Tuyển Dụng</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Điều Khoản Shopee</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Chính Sách Bảo Mật</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Shopee Mall</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Kênh Người Bán</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Flash Sale</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Tiếp Thị Liên Kết</a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">Liên Hệ Truyền Thông</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="grid_col-2-4">
+                    <h3 class="footer__heading">THANH TOÁN</h3>
+                    <ul class="pay-list">
+                        <li class="pay-item">
+                            <img src="./assets/img/visa.png" alt="" class="pay-item-img">
+                        </li>
+                        <li class="pay-item">
+                            <img src="./assets/img/round.png" alt="" class="pay-item-img">
+                        </li>
+                        <li class="pay-item">
+                            <img src="./assets/img/jcb.png" alt="" class="pay-item-img">
+                        </li>
+                        <li class="pay-item">
+                            <img src="./assets/img/americae.png" alt="" class="pay-item-img">
+                        </li>
+                        <li class="pay-item">
+                            <img src="./assets/img/cod.png" alt="" class="pay-item-img">
+                        </li>
+                        <li class="pay-item">
+                            <img src="./assets/img/tragop.png" alt="" class="pay-item-img">
+                        </li>
+                        <li class="pay-item">
+                            <img src="./assets/img/spay.png" alt="" class="pay-item-img">
+                        </li>
+                        <li class="pay-item">
+                            <img src="./assets/img/slater.png" alt="" class="pay-item-img">
+                        </li>
+                    </ul>
+                    <h3 class="footer__heading">ĐƠN VỊ VẬN CHUYỂN</h3>
+                    <ul class="pay-list">
+                        <li class="pay-item">
+                            <img src="./assets/img/spx.png" alt="" class="pay-item-img">
+                        </li>
+                        <li class="pay-item">
+                            <img src="./assets/img/ghn.png" alt="" class="pay-item-img">
+                        </li>
+                        <li class="pay-item">
+                            <img src="./assets/img/viettel.png" alt="" class="pay-item-img">
+                        </li>
+                        <li class="pay-item">
+                            <img src="./assets/img/vietpost.png" alt="" class="pay-item-img">
+                        </li>
+                        <li class="pay-item">
+                            <img src="./assets/img/jt.png" alt="" class="pay-item-img">
+                        </li>
+                        <li class="pay-item">
+                            <img src="./assets/img/grab.png" alt="" class="pay-item-img">
+                        </li>
+                        <li class="pay-item">
+                            <img src="./assets/img/ninjavan.png" alt="" class="pay-item-img">
+                        </li>
+                        <li class="pay-item">
+                            <img src="./assets/img/be.png" alt="" class="pay-item-img">
+                        </li>
+                        <li class="pay-item">
+                            <img src="./assets/img/aha.png" alt="" class="pay-item-img">
+                        </li>
+                    </ul>
+                </div>
+                <div class="grid_col-2-4">
+                    <h3 class="footer__heading">THEO DÕI SHOPEE</h3>
+                    <ul class="footer-list">
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">
+                                <img src="./assets/img/facebook.png" alt="" class="footer-item__link-img">
+                                Facebook
+                            </a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">
+                                <img src="./assets/img/instargram.png" alt="" class="footer-item__link-img">
+                                Instagram
+                            </a>
+                        </li>
+                        <li class="footer-item">
+                            <a href="" class="footer-item__link">
+                                <img src="./assets/img/linkIn.png" alt="" class="footer-item__link-img">
+                                LinkedIn
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="grid_col-2-4">
+                    <h3 class="footer__heading">TẢI ỨNG DỤNG SHOPEE</h3>
+                    <div class="footer__download">
+                        <a href="https://shopee.vn/web" class="footer__download-qr-link">
+                            <img src="./assets/img/qrft.png" alt="Download QR" class="footer__download-qr">
+                        </a>
+                        <div class="footer__download-apps">
+                            <a href="https://shopee.vn/web" class="footer__download-apps-link">
+                                <img src="./assets/img/asft.png" alt="Appstore" class="footer__download-apps-img">
+                            </a>
+                            <a href="https://shopee.vn/web" class="footer__download-apps-link">
+                                <img src="./assets/img/ggpft.png" alt="Googleplay" class="footer__download-apps-img">
+                            </a>
+                            <a href="https://shopee.vn/web" class="footer__download-apps-link">
+                                <img src="./assets/img/apft.png" alt="Appgallery" class="footer__download-apps-img">
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <div class="grid wide">
+            <div class="footer-mid">
+                <p class="footer-mid-copyright">© 2025 Shopee. Tất cả các quyền được bảo lưu.</p>
+                <ul class="country-list">
+                    <div class="country-heading">Quốc gia & Khu vực:</div>
+                    <li class="country-item">
+                        <a href="https://shopee.sg/" class="country-item__link">Singapore</a>
+                    </li>
+                    <li class="country-item">
+                        <a href="https://shopee.co.id/" class="country-item__link">Indonesia</a>
+                    </li>
+                    <li class="country-item">
+                        <a href="https://shopee.co.th/" class="country-item__link">Thái Lan</a>
+                    </li>
+                    <li class="country-item">
+                        <a href="http://shopee.com.my/" class="country-item__link">Malaysia</a>
+                    </li>
+                    <li class="country-item">
+                        <a href="https://shopee.vn/" class="country-item__link">Việt Nam</a>
+                    </li>
+                    <li class="country-item">
+                        <a href="https://shopee.ph/" class="country-item__link">Philippines</a>
+                    </li>
+                    <li class="country-item">
+                        <a href="https://shopee.com.br/" class="country-item__link">Brazil</a>
+                    </li>
+                    <li class="country-item">
+                        <a href="https://shopee.com.mx/" class="country-item__link">México</a>
+                    </li>
+                    <li class="country-item">
+                        <a href="https://shopee.com.co/" class="country-item__link">Colombia</a>
+                    </li>
+                    <li class="country-item">
+                        <a href="https://shopee.cl/" class="country-item__link">Chile</a>
+                    </li>
+                    <li class="country-item">
+                        <a href="https://shopee.tw/" class="country-item__link">Đài Loan</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
-
-        <footer class="footer">
+        <div class="footer-bottom">
             <div class="grid wide">
-                <div class="grid__row">
-                    <div class="grid_col-2-4">
-                        <h3 class="footer__heading">DỊCH VỤ KHÁCH HÀNG</h3>
-                        <ul class="footer-list">
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Trung Tâm Trợ Giúp Shopee</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Shopee Blog</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Shopee Mall</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Hướng Dẫn Mua Hàng/Đặt Hàng</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Hướng Dẫn Bán Hàng</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Ví ShopeePay</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Shopee Xu</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Đơn Hàng</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Trả Hàng/Hoàn Tiền</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Liên Hệ Shopee</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Chính Sách Bảo Hành</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="grid_col-2-4">
-                        <h3 class="footer__heading">SHOPEE VIỆT NAM</h3>
-                        <ul class="footer-list">
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Về Shopee</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Tuyển Dụng</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Điều Khoản Shopee</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Chính Sách Bảo Mật</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Shopee Mall</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Kênh Người Bán</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Flash Sale</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Tiếp Thị Liên Kết</a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">Liên Hệ Truyền Thông</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="grid_col-2-4">
-                        <h3 class="footer__heading">THANH TOÁN</h3>
-                        <ul class="pay-list">
-                            <li class="pay-item">
-                                <img src="./assets/img/visa.png" alt="" class="pay-item-img">
-                            </li>
-                            <li class="pay-item">
-                                <img src="./assets/img/round.png" alt="" class="pay-item-img">
-                            </li>
-                            <li class="pay-item">
-                                <img src="./assets/img/jcb.png" alt="" class="pay-item-img">
-                            </li>
-                            <li class="pay-item">
-                                <img src="./assets/img/americae.png" alt="" class="pay-item-img">
-                            </li>
-                            <li class="pay-item">
-                                <img src="./assets/img/cod.png" alt="" class="pay-item-img">
-                            </li>
-                            <li class="pay-item">
-                                <img src="./assets/img/tragop.png" alt="" class="pay-item-img">
-                            </li>
-                            <li class="pay-item">
-                                <img src="./assets/img/spay.png" alt="" class="pay-item-img">
-                            </li>
-                            <li class="pay-item">
-                                <img src="./assets/img/slater.png" alt="" class="pay-item-img">
-                            </li>
-                        </ul>
-                        <h3 class="footer__heading">ĐƠN VỊ VẬN CHUYỂN</h3>
-                        <ul class="pay-list">
-                            <li class="pay-item">
-                                <img src="./assets/img/spx.png" alt="" class="pay-item-img">
-                            </li>
-                            <li class="pay-item">
-                                <img src="./assets/img/ghn.png" alt="" class="pay-item-img">
-                            </li>
-                            <li class="pay-item">
-                                <img src="./assets/img/viettel.png" alt="" class="pay-item-img">
-                            </li>
-                            <li class="pay-item">
-                                <img src="./assets/img/vietpost.png" alt="" class="pay-item-img">
-                            </li>
-                            <li class="pay-item">
-                                <img src="./assets/img/jt.png" alt="" class="pay-item-img">
-                            </li>
-                            <li class="pay-item">
-                                <img src="./assets/img/grab.png" alt="" class="pay-item-img">
-                            </li>
-                            <li class="pay-item">
-                                <img src="./assets/img/ninjavan.png" alt="" class="pay-item-img">
-                            </li>
-                            <li class="pay-item">
-                                <img src="./assets/img/be.png" alt="" class="pay-item-img">
-                            </li>
-                            <li class="pay-item">
-                                <img src="./assets/img/aha.png" alt="" class="pay-item-img">
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="grid_col-2-4">
-                        <h3 class="footer__heading">THEO DÕI SHOPEE</h3>
-                        <ul class="footer-list">
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">
-                                    <img src="./assets/img/facebook.png" alt="" class="footer-item__link-img">
-                                    Facebook
-                                </a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">
-                                    <img src="./assets/img/instargram.png" alt="" class="footer-item__link-img">
-                                    Instagram
-                                </a>
-                            </li>
-                            <li class="footer-item">
-                                <a href="" class="footer-item__link">
-                                    <img src="./assets/img/linkIn.png" alt="" class="footer-item__link-img">
-                                    LinkedIn
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="grid_col-2-4">
-                        <h3 class="footer__heading">TẢI ỨNG DỤNG SHOPEE</h3>
-                        <div class="footer__download">
-                            <a href="https://shopee.vn/web" class="footer__download-qr-link">
-                                <img src="./assets/img/qrft.png" alt="Download QR" class="footer__download-qr">
-                            </a>
-                            <div class="footer__download-apps">
-                                <a href="https://shopee.vn/web" class="footer__download-apps-link">
-                                    <img src="./assets/img/asft.png" alt="Appstore" class="footer__download-apps-img">
-                                </a>
-                                <a href="https://shopee.vn/web" class="footer__download-apps-link">
-                                    <img src="./assets/img/ggpft.png" alt="Googleplay" class="footer__download-apps-img">
-                                </a>
-                                <a href="https://shopee.vn/web" class="footer__download-apps-link">
-                                    <img src="./assets/img/apft.png" alt="Appgallery" class="footer__download-apps-img">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                <ul class="security-list">
+                    <li class="security-item">
+                        <a href="" class="security-item__link">Chính sách bảo mật</a>
+                    </li>
+                    <li class="security-item">
+                        <a href="" class="security-item__link">Quy chế hoạt động</a>
+                    </li>
+                    <li class="security-item">
+                        <a href="" class="security-item__link">Chính sách vận chuyển</a>
+                    </li>
+                    <li class="security-item">
+                        <a href="" class="security-item__link">Chính Sách Trả Hàng Và Hoàn Tiền</a>
+                    </li>
+                </ul>
+
+                <div class="certification-list">
+                    <a href="http://online.gov.vn/Home/WebDetails/18367" class="certification-link">
+                        <img src="./assets/img/dadangky-Bo-Cong-Thuong.png" alt="" class="certification-link-img">
+                    </a>
+                    <a href="http://online.gov.vn/Home/AppDetails/29" class="certification-link">
+                        <img src="./assets/img/logo-da-thong-bao-bo-cong-thuong.webp" alt=""
+                            class="certification-link-img">
+                    </a>
+                    <a href="https://help.shopee.vn/portal/4" class="certification-link">
+                        <img src="./assets/img/bct-hanggia.png" alt="" class="certification-link-img">
+                    </a>
+                </div>
+
+                <h4 class="company-name">Công ty TNHH Shopee</h4>
+
+                <div class="location">
+                    <div class="company-address">Địa chỉ: Tầng 4-5-6, Tòa nhà Capital Place, số 29 đường Liễu
+                        Giai,
+                        Phường Ngọc Khánh, Quận Ba Đình, Thành phố Hà Nội, Việt Nam. Tổng đài hỗ trợ: 19001221 -
+                        Email:
+                        cskh@hotro.shopee.vn</div>
+                    <div class="company-address">Chịu Trách Nhiệm Quản Lý Nội Dung: Nguyễn Bùi Anh Tuấn</div>
+                    <div class="company-address">Mã số doanh nghiệp: 0106773786 do Sở Kế hoạch & Đầu tư TP Hà
+                        Nội
+                        cấp
+                        lần
+                        đầu ngày 10/02/2015</div>
+                    <div class="company-address">© 2015 - Bản quyền thuộc về Công ty TNHH Shopee</div>
                 </div>
             </div>
+        </div>
 
-            <div class="grid wide">
-                <div class="footer-mid">
-                    <p class="footer-mid-copyright">© 2025 Shopee. Tất cả các quyền được bảo lưu.</p>
-                    <ul class="country-list">
-                        <div class="country-heading">Quốc gia & Khu vực:</div>
-                        <li class="country-item">
-                            <a href="https://shopee.sg/" class="country-item__link">Singapore</a>
-                        </li>
-                        <li class="country-item">
-                            <a href="https://shopee.co.id/" class="country-item__link">Indonesia</a>
-                        </li>
-                        <li class="country-item">
-                            <a href="https://shopee.co.th/" class="country-item__link">Thái Lan</a>
-                        </li>
-                        <li class="country-item">
-                            <a href="http://shopee.com.my/" class="country-item__link">Malaysia</a>
-                        </li>
-                        <li class="country-item">
-                            <a href="https://shopee.vn/" class="country-item__link">Việt Nam</a>
-                        </li>
-                        <li class="country-item">
-                            <a href="https://shopee.ph/" class="country-item__link">Philippines</a>
-                        </li>
-                        <li class="country-item">
-                            <a href="https://shopee.com.br/" class="country-item__link">Brazil</a>
-                        </li>
-                        <li class="country-item">
-                            <a href="https://shopee.com.mx/" class="country-item__link">México</a>
-                        </li>
-                        <li class="country-item">
-                            <a href="https://shopee.com.co/" class="country-item__link">Colombia</a>
-                        </li>
-                        <li class="country-item">
-                            <a href="https://shopee.cl/" class="country-item__link">Chile</a>
-                        </li>
-                        <li class="country-item">
-                            <a href="https://shopee.tw/" class="country-item__link">Đài Loan</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <div class="grid wide">
-                    <ul class="security-list">
-                        <li class="security-item">
-                            <a href="" class="security-item__link">Chính sách bảo mật</a>
-                        </li>
-                        <li class="security-item">
-                            <a href="" class="security-item__link">Quy chế hoạt động</a>
-                        </li>
-                        <li class="security-item">
-                            <a href="" class="security-item__link">Chính sách vận chuyển</a>
-                        </li>
-                        <li class="security-item">
-                            <a href="" class="security-item__link">Chính Sách Trả Hàng Và Hoàn Tiền</a>
-                        </li>
-                    </ul>
-
-                    <div class="certification-list">
-                        <a href="http://online.gov.vn/Home/WebDetails/18367" class="certification-link">
-                            <img src="./assets/img/dadangky-Bo-Cong-Thuong.png" alt="" class="certification-link-img">
-                        </a>
-                        <a href="http://online.gov.vn/Home/AppDetails/29" class="certification-link">
-                            <img src="./assets/img/logo-da-thong-bao-bo-cong-thuong.webp" alt=""
-                                class="certification-link-img">
-                        </a>
-                        <a href="https://help.shopee.vn/portal/4" class="certification-link">
-                            <img src="./assets/img/bct-hanggia.png" alt="" class="certification-link-img">
-                        </a>
-                    </div>
-
-                    <h4 class="company-name">Công ty TNHH Shopee</h4>
-
-                    <div class="location">
-                        <div class="company-address">Địa chỉ: Tầng 4-5-6, Tòa nhà Capital Place, số 29 đường Liễu
-                            Giai,
-                            Phường Ngọc Khánh, Quận Ba Đình, Thành phố Hà Nội, Việt Nam. Tổng đài hỗ trợ: 19001221 -
-                            Email:
-                            cskh@hotro.shopee.vn</div>
-                        <div class="company-address">Chịu Trách Nhiệm Quản Lý Nội Dung: Nguyễn Bùi Anh Tuấn</div>
-                        <div class="company-address">Mã số doanh nghiệp: 0106773786 do Sở Kế hoạch & Đầu tư TP Hà
-                            Nội
-                            cấp
-                            lần
-                            đầu ngày 10/02/2015</div>
-                        <div class="company-address">© 2015 - Bản quyền thuộc về Công ty TNHH Shopee</div>
-                    </div>
-                </div>
-            </div>
-
-        </footer>
+    </footer>
     </div>
 
 

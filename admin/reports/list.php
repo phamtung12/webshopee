@@ -9,6 +9,65 @@ $sql = "SELECT r.*, p.name AS product_name
 
 $result = mysqli_query($conn, $sql);
 ?>
+<style>
+    h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    table {
+        width: 90%;
+        margin: auto;
+        border-collapse: collapse;
+        font-family: 'Arial', sans-serif;
+    }
+
+    th,
+    td {
+        padding: 12px 16px;
+        border: 1px solid #ccc;
+        text-align: center;
+    }
+
+    th {
+        background-color: #007BFF;
+        color: white;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tr:hover {
+        background-color: #eef;
+    }
+
+    .status-pending {
+        color: red;
+        font-weight: bold;
+    }
+
+    .status-reviewed {
+        color: orange;
+        font-weight: bold;
+    }
+
+    .status-resolved {
+        color: green;
+        font-weight: bold;
+    }
+
+    a {
+        text-decoration: none;
+        color: #007BFF;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+</style>
 
 <h2>📋 Danh sách báo cáo vi phạm</h2>
 
